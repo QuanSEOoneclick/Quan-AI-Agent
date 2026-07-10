@@ -1,2 +1,0 @@
-# Nhathuocankhang
-Repository for Nhathuocankhang
