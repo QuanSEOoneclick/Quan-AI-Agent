@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "electric-medium-300108",
+  "private_key_id": "8cad379ea8834ecf6021fb4271fd767b2784067b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC1U9rt4g+mP+RN\n2NpYokjepd/0u2At9NoHvBwViMuAIyv9aZg12UekSxjpRG8EVl4qOghVTbrA9xTs\n60FymGSp2edK/SCcpPQeNyjbNXmdRrP2pZHzMKbfk/vy3cJg7t76CVlPuQ8T8nFj\n9Ecx35go4tjgf8TvVmgavkvBhdDGfyAKd3IBg7TYeypSl2inz9kOA/XbBpKvJry9\n4SzCzBcRAWYJDxKa7FgZw+1T8kyRlQXGqZvVqAa0/semL89pIf/pv71wRIJHctlm\nx3ONtWYF4w5P82cPKb5BkiTsqWnEvAqxYnuiKNWcWj1OsvH1KY7WZK2iSWuqosiH\n2rPNI8dZAgMBAAECggEAMbfL3BTzaIi1PzkZ6VqZ81508UQdQ4yS6bME2ky3S6uZ\nKLM21nD8qUokCvXGIODTke12knktHzLATJPWzqaFV2MVfaS5N+osu0oxjCV18o9L\n0fGk+pLY9o27c+SlIvHsNo+wquDZhwUfXSJCESU3MeK9R5UQ+PTut4J9ABOCYqJK\n+StzrOK5Tzc1BFREQoDa6lFwfcfxM9SxFD5/KOP/I69IOYak1kt+1laVqn+YeSTr\nxX95TM8rGybg/zc3OTaUVylrkWgjsYiTYIKWO4CVyzmlJQZCcqHJTJRv06UujSKg\n2xShMBaL3jxKItoqJP5hwcDstllrVZsE5OI1gtBZNwKBgQDt9Sb18MbPx455Xuxe\nEtskGyDqnPA0gDJ/kZyKgwTIqBy4fciZ8zUuu0yM0OL7ijoK6Vt3wwD7V/Dmp4bb\nuPoFwQ5LZT/h5E7JK1OjsCSNGkxo/yHdvAflTaC1bwq9SI3bU2GVfQxaZRnhQbwI\nTV0CpaKQfMSipMFEqjhPdp7xWwKBgQDDE33ux4b6BfuupLXz6XwrZc6nKKBNKYjq\nT1PLFLAtSMweU/6AKfGgdOtxKi4f6wj+SriOlsCag3Sbdsvn/iwLM4fp//eRe60o\nTNypZ/qbrYg8x9V/T6N2PBGu+KiNAqY19ALC7pZLotZyYw0NNk4UP5fftlwNYj/R\no1Y2BdC0WwKBgHUeNA7YcwHRNk6Gac/jd/hNYeYXWCJ+9lvTTzjdQ31/QKONRS6A\nhax6gzLLnOwxHGBCesJ3OAR9RBRCYB3E7UnnuyFgtBB6Tky1BnWKPHM2fmUvLXv1\nD+3MR00FWkPPcgKBB4aMBYh4OkSkFegAK8chvuFeh2mFrZoeLZjuyUwBAoGAct3B\nY569je+D+ZwnP86WPP+fpbI4Yfc5Fa9MSeKOsruQ5bLTwyfvjWoLUQFjU4wUKZha\nACwokVMikIBtJNf3m0jmmRUN8+59UaOgs2f0m0KdXBzXTDXarL5GM19b8FxE/rQG\nBD505WinGYfVoZf+ddHUXfiFT6QwrAKfuwPFls0CgYEA6Bv5+4laLLhfiYPUV5G5\nUx1NVSV21wnbdW0GDpOp3AH3uGOLkMQV4R0sb8W2nDlwA8I/MkHvS/Xnu5GLvzly\nTuQgSp03EywAF5P6wT7Np3tl7UO2gS44rtKD7Fccm/0XrY+pp+MGu7oAW5W8Go2V\n6nHLoXp/E1zcRMeBhD5IOcI=\n-----END PRIVATE KEY-----\n",
+  "client_email": "id-3397-avakids@electric-medium-300108.iam.gserviceaccount.com",
+  "client_id": "103049099927923378888",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/id-3397-avakids%40electric-medium-300108.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

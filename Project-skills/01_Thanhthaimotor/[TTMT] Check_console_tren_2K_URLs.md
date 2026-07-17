@@ -47,10 +47,20 @@ Sau khi chạy, script sẽ tự động ghi đè và cập nhật kết quả v
 ### Bước 3: Chạy Script
 Chạy script kiểm tra ở chế độ unbuffered bằng Python:
 ```bash
-py -u "c:\Users\Quan%20Tran\Documents\GitHub\Quan-AI-Agent\Project-skills\01_Thanhthaimotor\Thanhthaimotor-references\Allsite-inspect_gsc_urls.py"
+py -u "c:\Users\Quan Tran\Documents\GitHub\Quan-AI-Agent\Project-skills\01_Thanhthaimotor\Thanhthaimotor-references\Allsite-inspect_gsc_urls.py"
 ```
 
-### Bước 4: Cách thức cập nhật dữ liệu tự động
+### Bước 4: Chọn phương thức chạy (Tiếp tục hoặc Từ đầu)
+Khi chạy, script sẽ hiển thị thông báo hỏi lựa chọn chế độ chạy:
+`Bạn muốn chạy từ đầu hay tiếp tục? (tu dau / tiep tuc):`
+
+*   **Trả lời "từ đầu"** (nhập `từ đầu`, `tu dau` hoặc `1`):
+    *   Hệ thống sẽ tự động gán lại trạng thái ở cột B (`trạng thái`) của tất cả các URL trong file đầu vào là `Chưa check` và xóa trắng các cột C, D.
+    *   Đồng thời reset file cache lịch sử và chạy lại toàn bộ danh sách URL từ đầu.
+*   **Trả lời "tiếp tục"** (nhập `tiếp tục`, `tiep tuc` hoặc `2` hoặc nhấn Enter):
+    *   Hệ thống giữ nguyên các kết quả đã check trước đó.
+    *   Chỉ lọc và thực hiện kiểm tra cho các URL đang có trạng thái `Chưa check` (hoặc trống) ở cột B của file.
+
+### Bước 5: Cách thức cập nhật dữ liệu tự động
 *   Script tự động tải file cache [inspect_cache.json](file:///c:/Users/Quan%20Tran/Documents/GitHub/Quan-AI-Agent/Project-skills/01_Thanhthaimotor/Thanhthaimotor-references/inspect_cache.json).
-*   Chỉ các URL chưa được quét hoặc trong cache **chưa có thời gian cào** mới được đưa vào hàng đợi kiểm tra (giúp tiết kiệm quota API).
 *   Sau khi chạy xong, script tự động ghi đè kết quả cập nhật 4 cột vào file CSV và xuất danh sách các URL lỗi `Noindex` ra báo cáo Excel [\[TTMT\]ALL-KW-Status.xlsx](file:///c:/Users/Quan%20Tran/Documents/GitHub/Quan-AI-Agent/Project-skills/01_Thanhthaimotor/Thanhthaimotor-references/\[TTMT\]ALL-KW-Status.xlsx).

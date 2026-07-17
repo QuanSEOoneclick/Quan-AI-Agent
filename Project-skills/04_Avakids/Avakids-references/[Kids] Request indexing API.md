@@ -1,12 +1,12 @@
 # Hướng Dẫn Chạy Google Indexing API Gửi Yêu Cầu Lập Chỉ Mục Hàng Loạt
 
-Tài liệu này hướng dẫn chi tiết cách chạy script [gsc_indexing_api_submit.py](file:///c:/Users/Quan%20Tran/Documents/GitHub/Quan-AI-Agent/Project-skills/01_Thanhthaimotor/Thanhthaimotor-references/gsc_indexing_api_submit.py) để tự động gửi yêu cầu lập chỉ mục hàng loạt thông qua API chính thức của Google, áp dụng cho các URL đang bị lỗi `Noindex` trên website **Thanhthaimotor**.
+Tài liệu này hướng dẫn chi tiết cách chạy script [gsc_indexing_api_submit.py](file:///c:/Users/Quan%20Tran/Documents/GitHub/Quan-AI-Agent/Project-skills/04_Avakids/Avakids-references/gsc_indexing_api_submit.py) để tự động gửi yêu cầu lập chỉ mục hàng loạt thông qua API chính thức của Google, áp dụng cho các URL đang bị lỗi `Noindex` trên website **Avakids**.
 
 ---
 
 ## 1. Cơ Chế Hoạt Động & Quản Lý Trạng Thái (CSV)
 
-Script sử dụng thuật toán thông minh để đọc, lọc và cập nhật file dữ liệu [Thanhthaimotor_checkindex.csv](file:///c:/Users/Quan%20Tran/Documents/GitHub/Quan-AI-Agent/Project-skills/01_Thanhthaimotor/Thanhthaimotor-references/Thanhthaimotor_checkindex.csv) với cấu trúc 5 cột:
+Script sử dụng thuật toán thông minh để đọc, lọc và cập nhật file dữ liệu [Avakids_checkindex.csv](file:///c:/Users/Quan%20Tran/Documents/GitHub/Quan-AI-Agent/Project-skills/04_Avakids/Avakids-references/Avakids_checkindex.csv) với cấu trúc ban đầu gồm 4 cột và sẽ tự động mở rộng thành 5 cột:
 
 *   **Cột A: `URLs check`** – URL trang web.
 *   **Cột B: `trạng thái`** – Giữ nguyên trạng thái (`Index` hoặc `Noindex` - không tự ý thay đổi).
@@ -28,13 +28,13 @@ Chi tiết xử lý:
 
 ### Bước 1: Kiểm tra tài khoản Service Account
 Đảm bảo file key JSON của Google Service Account được đặt tại:
-*   [bigquery_key.json](file:///c:/Users/Quan%20Tran/Documents/GitHub/Quan-AI-Agent/Project-skills/01_Thanhthaimotor/Thanhthaimotor-references/bigquery_key.json)
-*   *Lưu ý quan trọng:* Email Service Account (`quantran24211@trim-odyssey-326012.iam.gserviceaccount.com`) phải được phân quyền là **Chủ sở hữu (Owner)** hoặc **Chủ sở hữu được ủy quyền (Delegated Owner)** của các property tương ứng trong GSC Console.
+*   [gsc_key.json](file:///c:/Users/Quan%20Tran/Documents/GitHub/Quan-AI-Agent/Project-skills/04_Avakids/Avakids-references/gsc_key.json)
+*   *Lưu ý quan trọng:* Email Service Account (`id-3397-avakids@electric-medium-300108.iam.gserviceaccount.com`) phải được phân quyền là **Chủ sở hữu (Owner)** hoặc **Chủ sở hữu được ủy quyền (Delegated Owner)** của các property tương ứng trong GSC Console.
 
 ### Bước 2: Chạy Script
 Mở PowerShell hoặc Command Prompt và chạy lệnh dưới đây:
 ```bash
-py -u "c:\Users\Quan Tran\Documents\GitHub\Quan-AI-Agent\Project-skills\01_Thanhthaimotor\Thanhthaimotor-references\gsc_indexing_api_submit.py"
+py -u "c:\Users\Quan Tran\Documents\GitHub\Quan-AI-Agent\Project-skills\04_Avakids\Avakids-references\gsc_indexing_api_submit.py"
 ```
 
 ### Bước 3: Chọn phương thức chạy (Tiếp tục hoặc Từ đầu)

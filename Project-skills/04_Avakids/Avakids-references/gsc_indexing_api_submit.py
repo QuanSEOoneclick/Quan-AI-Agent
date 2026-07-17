@@ -11,9 +11,23 @@ from googleapiclient.errors import HttpError
 sys.stdout.reconfigure(encoding='utf-8')
 
 # Configurations
-KEY_PATH = r"c:\Users\Quan Tran\Documents\GitHub\Quan-AI-Agent\Project-skills\01_Thanhthaimotor\Thanhthaimotor-references\bigquery_key.json"
-CSV_PATH = r"c:\Users\Quan Tran\Documents\GitHub\Quan-AI-Agent\Project-skills\01_Thanhthaimotor\Thanhthaimotor-references\Thanhthaimotor_checkindex.csv"
-CACHE_PATH = r"c:\Users\Quan Tran\Documents\GitHub\Quan-AI-Agent\Project-skills\01_Thanhthaimotor\Thanhthaimotor-references\inspect_cache.json"
+KEY_PATH = r"c:\Users\Quan Tran\Documents\GitHub\Quan-AI-Agent\Project-skills\04_Avakids\Avakids-references\gsc_key.json"
+CSV_PATH = r"c:\Users\Quan Tran\Documents\GitHub\Quan-AI-Agent\Project-skills\04_Avakids\Avakids-references\Avakids_checkindex.csv"
+CACHE_PATH = r"c:\Users\Quan Tran\Documents\GitHub\Quan-AI-Agent\Project-skills\04_Avakids\Avakids-references\inspect_cache.json"
+
+def set_console_title(title):
+    """Set the terminal/console window title dynamically."""
+    try:
+        sys.stdout.write(f"\x1b]2;{title}\x07")
+        sys.stdout.flush()
+    except Exception:
+        pass
+    try:
+        if os.name == 'nt':
+            import ctypes
+            ctypes.windll.kernel32.SetConsoleTitleW(title)
+    except Exception:
+        pass
 
 def load_inspect_cache():
     """Load caching of inspected URLs to restore original crawl times."""
@@ -47,7 +61,8 @@ def save_csv(header, rows):
         print(f"❌ Error saving CSV: {e}")
 
 def main():
-    print("🚀 Google Indexing API Bulk Submitter Started")
+    set_console_title("🚀 Google Indexing API Bulk Submitter Started")
+    print("🚀 Google Indexing API Bulk Submitter Started (AVAKIDS)")
     
     # 1. Read CSV File
     if not os.path.exists(CSV_PATH):
@@ -135,13 +150,15 @@ def main():
     print(f"🔍 Found {total_noindex} URLs with status 'Noindex' và chưa chạy Indexing.")
     
     if total_noindex == 0:
+        set_console_title("✅ Finished GSC Indexing")
         print("🎉 No URLs to index! All pages are already indexed or checked.")
         return
         
     # Default limit is 200 URLs per run, no user prompt required
     limit = 200
+    total_to_submit = min(total_noindex, limit)
         
-    print(f"⏳ Preparing to submit up to {limit} URLs to Google Indexing API...")
+    print(f"⏳ Preparing to submit up to {total_to_submit} URLs to Google Indexing API...")
     
     # 4. Initialize Indexing API Service
     try:
@@ -160,7 +177,9 @@ def main():
             break
             
         url = r[url_idx].strip()
-        print(f"\n[{submitted_count + 1}/{limit}] Submitting URL: {url}")
+        pct = ((submitted_count + 1) / total_to_submit) * 100
+        print(f"\n[{submitted_count + 1}/{total_to_submit}] ({pct:.1f}%) Submitting URL: {url}")
+        set_console_title(f"[{submitted_count + 1}/{total_to_submit}] ({pct:.1f}%) GSC Indexing")
         
         try:
             body = {
@@ -195,7 +214,7 @@ def main():
             if e.resp.status == 403:
                 print("💡 Tip: Please ensure that:")
                 print("  1. The Web Search Indexing API is enabled in your Google Cloud Project console.")
-                print("  2. The Service Account email (quantran24211@...) is added as an 'Owner' (or Delegated Owner) of the GSC property.")
+                print("  2. The Service Account email (id-3397-avakids@...) is added as an 'Owner' (or Delegated Owner) of the GSC property.")
                 # We stop the script on 403 to prevent spamming failed requests
                 print("\n🛑 Stopping execution due to permission error (403).")
                 break
@@ -213,6 +232,7 @@ def main():
         # Add a tiny delay (0.5s) to avoid rate limits
         time.sleep(0.5)
         
+    set_console_title("✅ Finished GSC Indexing")
     print(f"\n==================================================")
     print(f"🎉 Job Finished!")
     print(f"   - Processed: {submitted_count} URLs")

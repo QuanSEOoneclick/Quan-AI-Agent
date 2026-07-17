@@ -175,29 +175,57 @@ def main():
         print(f"❌ CSV File not found at {CSV_PATH}")
         return
         
-    urls = []
+    csv_rows = []
     try:
         with open(CSV_PATH, 'r', encoding='utf-8') as f:
             reader = csv.reader(f)
             header = next(reader, None) # skip header
             for row in reader:
                 if row and row[0].strip():
-                    urls.append(row[0].strip())
+                    while len(row) < 4:
+                        row.append('')
+                    csv_rows.append(row)
     except Exception as e:
         print(f"❌ Error reading CSV file: {e}")
         return
-    print(f"📋 Loaded {len(urls)} URLs from CSV (excluding header).")
+    print(f"📋 Loaded {len(csv_rows)} URLs from CSV (excluding header).")
     
-    # Load and clean cache
-    cache = load_cache()
-    print(f"💾 Loaded cache. Already checked URLs: {len(cache)}")
+    # Prompt user for run mode
+    choice = input("Bạn muốn chạy từ đầu hay tiếp tục? (tu dau / tiep tuc): ").strip().lower()
     
-    # Filter out URLs to inspect
-    urls_to_inspect = []
-    for url in urls:
-        if url in cache and cache[url].get('status') != 'ERROR' and cache[url].get('last_crawl_time'):
-            continue
-        urls_to_inspect.append(url)
+    is_from_start = choice in ('tu dau', 'từ đầu', 'tudau', '1')
+    
+    if is_from_start:
+        print("🔄 Đã chọn chạy từ đầu. Đang reset cache và cập nhật trạng thái CSV...")
+        cache = {}
+        save_cache_file()
+        
+        for row in csv_rows:
+            row[1] = 'Chưa check'
+            row[2] = ''
+            row[3] = ''
+            
+        urls = [row[0] for row in csv_rows]
+        urls_to_inspect = list(urls)
+        
+        # Save CSV immediately
+        update_csv(urls, cache)
+    else:
+        print("▶️ Đã chọn tiếp tục. Đang lọc các URL chưa check...")
+        cache = load_cache()
+        print(f"💾 Loaded cache. Already checked URLs in cache: {len(cache)}")
+        
+        urls = [row[0] for row in csv_rows]
+        urls_to_inspect = []
+        for row in csv_rows:
+            url = row[0]
+            status_csv = row[1].strip()
+            
+            # Chỉ lọc các URL đang có trạng thái "Chưa check" hoặc trống ở cột B
+            if status_csv in ('Chưa check', '', None):
+                if url in cache and cache[url].get('status') != 'ERROR' and cache[url].get('last_crawl_time'):
+                    continue
+                urls_to_inspect.append(url)
         
     print(f"🔍 URLs pending inspection: {len(urls_to_inspect)}")
     
@@ -391,6 +419,7 @@ def update_csv(all_urls, cache):
                 
                 # Determine status
                 status = "Chưa check"
+                prop_name = ""
                 last_crawl = ""
                 cache_entry = None
                 if url in cache:
@@ -406,8 +435,8 @@ def update_csv(all_urls, cache):
                         # Clean date format: 2026-07-08T15:20:00Z -> 2026-07-08 15:20:00
                         last_crawl = last_crawl.replace('T', ' ').replace('Z', '')
                 
-                # Determine property name
-                prop_name = get_property_display_name_fallback(url, cache_entry)
+                    # Determine property name only if it was checked
+                    prop_name = get_property_display_name_fallback(url, cache_entry)
                     
                 writer.writerow([url, status, prop_name, last_crawl])
         print(f"✅ CSV file successfully updated.")
