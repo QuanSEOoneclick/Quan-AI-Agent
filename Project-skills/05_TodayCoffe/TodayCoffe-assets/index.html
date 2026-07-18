@@ -625,9 +625,11 @@
         transform: translateY(8px) scale(0.8);
         opacity: 0;
       }
+
       50% {
         opacity: 0.8;
       }
+
       100% {
         transform: translateY(-8px) scale(1.2);
         opacity: 0;
@@ -723,7 +725,8 @@
           <div class="branding-container">
             <span class="branding-label">Ứng dụng được phát triển bởi</span>
             <a href="https://seooneclick.vn" target="_blank" class="branding-link">
-              <img src="https://seooneclick.vn/wp-content/uploads/2024/09/Logo-SEO-One-Click.jpg.webp" alt="SEOoneclick.vn Logo" class="branding-logo">
+              <img src="https://seooneclick.vn/wp-content/uploads/2024/09/Logo-SEO-One-Click.jpg.webp"
+                alt="SEOoneclick.vn Logo" class="branding-logo">
             </a>
           </div>
         </div>
@@ -756,6 +759,33 @@
                 <svg class="input-icon" viewBox="0 0 24 24">
                   <path
                     d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Mã kho -->
+            <div class="form-group">
+              <div class="section-label">
+                <svg viewBox="0 0 24 24">
+                  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                Mã kho
+              </div>
+              <div class="input-text-container">
+                <select id="loginWarehouse" class="select-mode" required>
+                  <option value="TC01" selected>TC01</option>
+                  <option value="TC02">TC02</option>
+                  <option value="TC03">TC03</option>
+                  <option value="TC04">TC04</option>
+                  <option value="TC05">TC05</option>
+                  <option value="TC06">TC06</option>
+                  <option value="TC07">TC07</option>
+                  <option value="TC08">TC08</option>
+                  <option value="TC09">TC09</option>
+                  <option value="TC10">TC10</option>
+                </select>
+                <svg class="input-icon" viewBox="0 0 24 24">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                 </svg>
               </div>
             </div>
@@ -828,7 +858,7 @@
                 <path
                   d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" />
               </svg>
-              Chọn Món Nước
+              Chọn Món
             </div>
 
             <!-- Loại cà phê -->
@@ -974,6 +1004,7 @@
     const orderPage = document.getElementById("orderPage");
     const loginForm = document.getElementById("loginForm");
     const loginUser = document.getElementById("loginUser");
+    const loginWarehouse = document.getElementById("loginWarehouse");
     const loginPass = document.getElementById("loginPass");
     const loginError = document.getElementById("loginError");
     const btnLoginSubmit = document.getElementById("btnLoginSubmit");
@@ -997,9 +1028,10 @@
     function checkLoginStatus() {
       const isLoggedIn = localStorage.getItem("today_coffee_logged_in") === "true";
       const savedUser = localStorage.getItem("today_coffee_username");
+      const savedWarehouse = localStorage.getItem("today_coffee_warehouse") || "TC01";
 
       if (isLoggedIn && savedUser) {
-        lblAccountName.innerText = savedUser;
+        lblAccountName.innerText = `${savedUser} (${savedWarehouse})`;
 
         // Không cần thao tác hiển thị/khoá dropdown Người bán vì đã loại bỏ khỏi giao diện
 
@@ -1009,8 +1041,9 @@
       } else {
         loginPage.classList.add("active");
         orderPage.classList.remove("active");
-        // Tải danh sách người bán từ sheet để làm dropdown đăng nhập
+        // Tải danh sách người bán và mã kho từ sheet để làm dropdown đăng nhập
         loadUsernames();
+        loadWarehouses();
       }
     }
 
@@ -1039,8 +1072,58 @@
         })
         .catch(err => {
           console.error("Lỗi:", err);
-          loginUser.innerHTML = '<option value="" disabled>Lỗi kết nối máy chủ</option>';
+          loginUser.innerHTML = `<option value="" disabled>Lỗi kết nối: ${err.message}</option>`;
         });
+    }
+
+    // Tải danh sách mã kho từ Cột A sheet "Ma-kho"
+    function loadWarehouses() {
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({ action: "getWarehouses" })
+      })
+        .then(response => response.json())
+        .then(res => {
+          if (res.result === "success" && res.warehouses && res.warehouses.length > 0) {
+            const currentSelected = loginWarehouse.value || "TC01";
+            loginWarehouse.innerHTML = '';
+            res.warehouses.forEach(wh => {
+              const opt = document.createElement("option");
+              opt.value = wh;
+              opt.innerText = wh;
+              if (wh === currentSelected) {
+                opt.selected = true;
+              }
+              loginWarehouse.appendChild(opt);
+            });
+            // Nếu không có currentSelected trong danh sách, chọn phần tử đầu tiên
+            if (!loginWarehouse.value && loginWarehouse.options.length > 0) {
+              loginWarehouse.selectedIndex = 0;
+            }
+          } else {
+            useWarehouseFallback();
+          }
+        })
+        .catch(err => {
+          console.error("Lỗi:", err);
+          useWarehouseFallback();
+        });
+    }
+
+    function useWarehouseFallback() {
+      const currentSelected = loginWarehouse.value || "TC01";
+      const fallbackList = ["TC01", "TC02", "TC03", "TC04", "TC05", "TC06", "TC07", "TC08", "TC09", "TC10"];
+      loginWarehouse.innerHTML = '';
+      fallbackList.forEach(wh => {
+        const opt = document.createElement("option");
+        opt.value = wh;
+        opt.innerText = wh;
+        if (wh === currentSelected) {
+          opt.selected = true;
+        }
+        loginWarehouse.appendChild(opt);
+      });
     }
 
     // ================= XỬ LÝ FORM ĐĂNG NHẬP =================
@@ -1048,10 +1131,15 @@
       e.preventDefault();
 
       const username = loginUser.value;
+      const warehouse = loginWarehouse.value;
       const password = loginPass.value.trim();
 
       if (!username) {
         alert("Vui lòng chọn tên đăng nhập!");
+        return;
+      }
+      if (!warehouse) {
+        alert("Vui lòng chọn mã kho!");
         return;
       }
 
@@ -1080,8 +1168,10 @@
             // Lưu trạng thái đăng nhập
             localStorage.setItem("today_coffee_logged_in", "true");
             localStorage.setItem("today_coffee_username", res.username);
+            localStorage.setItem("today_coffee_warehouse", warehouse);
 
             loginUser.value = "";
+            loginWarehouse.value = "TC01";
             loginPass.value = "";
 
             // Reset nút
@@ -1109,6 +1199,7 @@
     btnLogout.addEventListener("click", () => {
       localStorage.removeItem("today_coffee_logged_in");
       localStorage.removeItem("today_coffee_username");
+      localStorage.removeItem("today_coffee_warehouse");
       lblAccountName.innerText = "...";
       checkLoginStatus();
     });
@@ -1421,9 +1512,11 @@
 
       const orderModeText = (mode === "single") ? "Đơn lẻ" : "Đơn nhiều";
       const sellerName = localStorage.getItem("today_coffee_username") || "Ẩn danh";
+      const warehouseName = localStorage.getItem("today_coffee_warehouse") || "TC01";
       const paymentEl = document.querySelector('input[name="payment"]:checked');
       const formData = {
         seller: sellerName,
+        warehouse: warehouseName,
         payment: paymentEl ? paymentEl.value : "",
         note: noteInput.value,
         orderMode: orderModeText,
