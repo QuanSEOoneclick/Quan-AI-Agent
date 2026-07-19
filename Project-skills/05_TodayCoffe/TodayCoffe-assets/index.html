@@ -705,6 +705,40 @@
       padding: 4px 8px;
       border: 1px solid var(--border);
     }
+
+    /* Tab Menu Navigation */
+    .tab-nav-btn-container {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1.5px solid var(--border);
+      padding-bottom: 10px;
+    }
+    .tab-btn {
+      flex: 1;
+      width: auto;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: var(--white);
+      color: var(--text-secondary);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .tab-btn.active {
+      background: var(--primary-green) !important;
+      color: var(--white) !important;
+      border-color: var(--primary-green) !important;
+      box-shadow: 0 4px 12px rgba(10, 77, 46, 0.15);
+    }
   </style>
 </head>
 
@@ -834,7 +868,15 @@
             </button>
           </div>
 
-          <!-- 1. LOẠI ĐƠN HÀNG (Full Width) -->
+          <!-- Tab Menu Navigation -->
+          <div class="tab-nav-btn-container">
+            <button type="button" id="btnTabSales" class="tab-btn active">Bán Hàng</button>
+            <button type="button" id="btnTabIngress" class="tab-btn">Nhập Kho</button>
+          </div>
+
+          <!-- Sales Ingress Toggle Container -->
+          <div id="salesSection">
+            <!-- 1. LOẠI ĐƠN HÀNG (Full Width) -->
           <div class="form-group" style="margin-bottom: 20px;">
             <div class="section-label">
               <svg viewBox="0 0 24 24">
@@ -970,6 +1012,113 @@
             <!-- Nút Gửi toàn bộ đơn -->
             <button type="submit" class="btn-primary" id="btnSubmitOrder" disabled>Gửi đơn hàng (0đ)</button>
           </form>
+          </div> <!-- Close #salesSection -->
+
+          <!-- ================= SECTION: NHẬP KHO ================= -->
+          <div id="ingressSection" style="display: none;">
+            <form id="ingressForm" novalidate>
+              <!-- Mã kho nhập -->
+              <div class="form-group">
+                <div class="section-label">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                  </svg>
+                  Mã kho nhập
+                </div>
+                <div class="input-text-container">
+                  <select id="ingressWarehouse" class="select-mode" required>
+                    <option value="TC01" selected>TC01</option>
+                    <option value="TC02">TC02</option>
+                    <option value="TC03">TC03</option>
+                    <option value="TC04">TC04</option>
+                    <option value="TC05">TC05</option>
+                    <option value="TC06">TC06</option>
+                    <option value="TC07">TC07</option>
+                    <option value="TC08">TC08</option>
+                    <option value="TC09">TC09</option>
+                    <option value="TC10">TC10</option>
+                  </select>
+                  <svg class="input-icon" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Hạng mục NVL -->
+              <div class="form-group">
+                <div class="section-label">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" />
+                  </svg>
+                  Hạng mục nguyên vật liệu
+                </div>
+                <div class="input-text-container">
+                  <select id="ingressItem" class="select-mode" required>
+                    <option value="" disabled selected>-- Chọn nguyên vật liệu --</option>
+                    <option value="Cà phê">Cà phê</option>
+                    <option value="Sữa đặc">Sữa đặc</option>
+                    <option value="Sữa tươi">Sữa tươi</option>
+                    <option value="Đường">Đường</option>
+                    <option value="Đá viên">Đá viên</option>
+                    <option value="Nước lọc RO">Nước lọc RO</option>
+                    <option value="Ly nhựa (Size S)">Ly nhựa (Size S)</option>
+                    <option value="Ly nhựa (Size L)">Ly nhựa (Size L)</option>
+                    <option value="Nắp/Màng dập">Nắp/Màng dập</option>
+                    <option value="Ống hút thẳng">Ống hút thẳng</option>
+                    <option value="Ống hút kèm muỗng">Ống hút kèm muỗng</option>
+                    <option value="Túi đựng mang đi">Túi đựng mang đi</option>
+                    <option value="Khăn giấy">Khăn giấy</option>
+                  </select>
+                  <svg class="input-icon" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Số lượng nhập -->
+              <div class="form-group">
+                <div class="section-label">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z" />
+                  </svg>
+                  Số lượng nhập <span id="lblIngressUnit" style="font-weight: 500; text-transform: none; color: var(--text-secondary); margin-left: 4px;"></span>
+                </div>
+                <div class="input-text-container">
+                  <input type="number" id="ingressQty" class="input-text" placeholder="Nhập số lượng..." min="0" step="any" required>
+                  <svg class="input-icon" viewBox="0 0 24 24">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                  </svg>
+                </div>
+                <div class="error-text" id="errIngressQty">Vui lòng nhập số lượng hợp lệ!</div>
+              </div>
+
+              <!-- Đơn giá nhập -->
+              <div class="form-group">
+                <div class="section-label">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+                  </svg>
+                  Đơn giá nhập kho (VNĐ)
+                </div>
+                <div class="input-text-container">
+                  <input type="number" id="ingressPrice" class="input-text" placeholder="Nhập đơn giá..." min="0" required>
+                  <svg class="input-icon" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" />
+                  </svg>
+                </div>
+                <div id="lblIngressPriceFormatted" style="font-size: 12px; font-weight: 600; color: var(--primary-green); margin-top: 6px; display: none; padding-left: 4px;"></div>
+                <div class="error-text" id="errIngressPrice">Vui lòng nhập đơn giá hợp lệ!</div>
+              </div>
+
+              <!-- Hiển thị thông tin quy đổi động -->
+              <div id="ingressConversionBox" class="price-summary-box" style="margin-top: 20px; display: none; justify-content: space-between; font-size: 13px; align-items: center;">
+                <span class="price-label">Chi tiết nhập:</span>
+                <span class="price-value" id="lblIngressSummaryText" style="font-weight: 700; color: var(--primary-green); text-align: right; word-break: break-word;"></span>
+              </div>
+
+              <button type="submit" class="btn-primary" id="btnSubmitIngress" style="margin-top: 20px;" disabled>Xác nhận Nhập kho</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -999,6 +1148,24 @@
     // Mảng giỏ hàng
     let cart = [];
 
+    // Danh mục nguyên vật liệu nhập kho (Sẽ tải động từ sheet)
+    let INGREDIENTS_MASTER = {};
+    const DEFAULT_PRICES = {
+      "Cà phê": 200000,
+      "Sữa đặc": 60000,
+      "Sữa tươi": 30000,
+      "Đường": 20000,
+      "Đá viên": 1200,
+      "Nước lọc RO": 100,
+      "Ly nhựa (Size S)": 600,
+      "Ly nhựa (Size L)": 800,
+      "Nắp/Màng dập": 200,
+      "Ống hút thẳng": 100,
+      "Ống hút kèm muỗng": 150,
+      "Túi đựng mang đi": 200,
+      "Khăn giấy": 50
+    };
+
     // Caching các phần tử DOM
     const loginPage = document.getElementById("loginPage");
     const orderPage = document.getElementById("orderPage");
@@ -1024,6 +1191,24 @@
     const noteInput = document.getElementById("note");
     const successToast = document.getElementById("successToast");
 
+    // Ingress DOM elements
+    const btnTabSales = document.getElementById("btnTabSales");
+    const btnTabIngress = document.getElementById("btnTabIngress");
+    const salesSection = document.getElementById("salesSection");
+    const ingressSection = document.getElementById("ingressSection");
+    const ingressForm = document.getElementById("ingressForm");
+    const ingressItem = document.getElementById("ingressItem");
+    const ingressQty = document.getElementById("ingressQty");
+    const ingressPrice = document.getElementById("ingressPrice");
+    const lblIngressUnit = document.getElementById("lblIngressUnit");
+    const errIngressQty = document.getElementById("errIngressQty");
+    const errIngressPrice = document.getElementById("errIngressPrice");
+    const ingressConversionBox = document.getElementById("ingressConversionBox");
+    const btnSubmitIngress = document.getElementById("btnSubmitIngress");
+    const lblIngressPriceFormatted = document.getElementById("lblIngressPriceFormatted");
+    const lblIngressSummaryText = document.getElementById("lblIngressSummaryText");
+    const ingressWarehouse = document.getElementById("ingressWarehouse");
+
     // ================= XỬ LÝ KHỞI ĐẦU: KIỂM TRA TRẠNG THÁI ĐĂNG NHẬP =================
     function checkLoginStatus() {
       const isLoggedIn = localStorage.getItem("today_coffee_logged_in") === "true";
@@ -1032,6 +1217,8 @@
 
       if (isLoggedIn && savedUser) {
         lblAccountName.innerText = `${savedUser} (${savedWarehouse})`;
+        ingressWarehouse.value = savedWarehouse;
+        loadIngressItems();
 
         // Không cần thao tác hiển thị/khoá dropdown Người bán vì đã loại bỏ khỏi giao diện
 
@@ -1045,6 +1232,80 @@
         loadUsernames();
         loadWarehouses();
       }
+    }
+
+    // Tải danh sách hạng mục nhập xuất động từ sheet "Danh-sach-hang-muc-nhap-xuat"
+    function loadIngressItems() {
+      ingressItem.innerHTML = '<option value="" disabled selected>Đang tải danh mục...</option>';
+      
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({ action: "getIngressItems" })
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Lỗi kết nối");
+          }
+          return response.json();
+        })
+        .then(res => {
+          if (res.result === "success" && res.items && res.items.length > 0) {
+            INGREDIENTS_MASTER = {};
+            ingressItem.innerHTML = '<option value="" disabled selected>-- Chọn nguyên vật liệu --</option>';
+            
+            res.items.forEach(item => {
+              const stdQty = Number(item.stdQty) || 1;
+              const cupQty = Number(item.cupQty) || 1;
+              const conversion = stdQty > 0 ? (cupQty / stdQty) : 1;
+              
+              INGREDIENTS_MASTER[item.name] = {
+                stdUnit: item.stdUnit,
+                cupUnit: item.cupUnit,
+                conversionRate: conversion,
+                defaultPrice: DEFAULT_PRICES[item.name] || ""
+              };
+              
+              const opt = document.createElement("option");
+              opt.value = item.name;
+              opt.innerText = item.name;
+              ingressItem.appendChild(opt);
+            });
+          } else {
+            useIngressItemsFallback();
+          }
+        })
+        .catch(err => {
+          console.error("Lỗi tải danh mục nhập xuất:", err);
+          useIngressItemsFallback();
+        });
+    }
+
+    function useIngressItemsFallback() {
+      const fallback = {
+        "Cà phê": { stdUnit: "Kg", cupUnit: "g", conversionRate: 1000, defaultPrice: 200000 },
+        "Sữa đặc": { stdUnit: "Kg", cupUnit: "g", conversionRate: 1000, defaultPrice: 60000 },
+        "Sữa tươi": { stdUnit: "Lít", cupUnit: "ml", conversionRate: 1000, defaultPrice: 30000 },
+        "Đường": { stdUnit: "Lít", cupUnit: "ml", conversionRate: 1000, defaultPrice: 20000 },
+        "Đá viên": { stdUnit: "Kg", cupUnit: "g", conversionRate: 1000, defaultPrice: 1200 },
+        "Nước lọc RO": { stdUnit: "Lít", cupUnit: "ml", conversionRate: 1000, defaultPrice: 100 },
+        "Ly nhựa (Size S)": { stdUnit: "Cái", cupUnit: "cái", conversionRate: 1, defaultPrice: 600 },
+        "Ly nhựa (Size L)": { stdUnit: "Cái", cupUnit: "cái", conversionRate: 1, defaultPrice: 800 },
+        "Nắp/Màng dập": { stdUnit: "Cái", cupUnit: "cái", conversionRate: 1, defaultPrice: 200 },
+        "Ống hút thẳng": { stdUnit: "Cái", cupUnit: "cái", conversionRate: 1, defaultPrice: 100 },
+        "Ống hút kèm muỗng": { stdUnit: "Cái", cupUnit: "cái", conversionRate: 1, defaultPrice: 150 },
+        "Túi đựng mang đi": { stdUnit: "Cái", cupUnit: "cái", conversionRate: 1, defaultPrice: 200 },
+        "Khăn giấy": { stdUnit: "Bịch", cupUnit: "tờ", conversionRate: 1000, defaultPrice: 50 }
+      };
+      
+      INGREDIENTS_MASTER = fallback;
+      ingressItem.innerHTML = '<option value="" disabled selected>-- Chọn nguyên vật liệu --</option>';
+      Object.keys(fallback).forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.innerText = name;
+        ingressItem.appendChild(opt);
+      });
     }
 
     // Tải danh sách tên đăng nhập từ Cột A sheet "Dang-nhap"
@@ -1088,6 +1349,7 @@
           if (res.result === "success" && res.warehouses && res.warehouses.length > 0) {
             const currentSelected = loginWarehouse.value || "TC01";
             loginWarehouse.innerHTML = '';
+            ingressWarehouse.innerHTML = '';
             res.warehouses.forEach(wh => {
               const opt = document.createElement("option");
               opt.value = wh;
@@ -1096,6 +1358,11 @@
                 opt.selected = true;
               }
               loginWarehouse.appendChild(opt);
+
+              const optIngress = document.createElement("option");
+              optIngress.value = wh;
+              optIngress.innerText = wh;
+              ingressWarehouse.appendChild(optIngress);
             });
             // Nếu không có currentSelected trong danh sách, chọn phần tử đầu tiên
             if (!loginWarehouse.value && loginWarehouse.options.length > 0) {
@@ -1115,6 +1382,7 @@
       const currentSelected = loginWarehouse.value || "TC01";
       const fallbackList = ["TC01", "TC02", "TC03", "TC04", "TC05", "TC06", "TC07", "TC08", "TC09", "TC10"];
       loginWarehouse.innerHTML = '';
+      ingressWarehouse.innerHTML = '';
       fallbackList.forEach(wh => {
         const opt = document.createElement("option");
         opt.value = wh;
@@ -1123,6 +1391,11 @@
           opt.selected = true;
         }
         loginWarehouse.appendChild(opt);
+
+        const optIngress = document.createElement("option");
+        optIngress.value = wh;
+        optIngress.innerText = wh;
+        ingressWarehouse.appendChild(optIngress);
       });
     }
 
@@ -1201,6 +1474,11 @@
       localStorage.removeItem("today_coffee_username");
       localStorage.removeItem("today_coffee_warehouse");
       lblAccountName.innerText = "...";
+      // Trở lại tab Bán hàng mặc định
+      btnTabSales.classList.add("active");
+      btnTabIngress.classList.remove("active");
+      salesSection.style.display = "block";
+      ingressSection.style.display = "none";
       checkLoginStatus();
     });
 
@@ -1608,6 +1886,260 @@
           alert("Lỗi khi gửi đơn: " + err.message);
           btnSubmitOrder.innerText = originalText;
           btnSubmitOrder.disabled = false;
+        });
+    });
+
+    // ================= XỬ LÝ CHUYỂN TABS (BÁN HÀNG / NHẬP KHO) =================
+    btnTabSales.addEventListener("click", () => {
+      btnTabSales.classList.add("active");
+      btnTabIngress.classList.remove("active");
+      salesSection.style.display = "block";
+      ingressSection.style.display = "none";
+    });
+
+    btnTabIngress.addEventListener("click", () => {
+      btnTabIngress.classList.add("active");
+      btnTabSales.classList.remove("active");
+      salesSection.style.display = "none";
+      ingressSection.style.display = "block";
+      // Focus vào select hạng mục
+      ingressItem.focus();
+    });
+
+    // ================= XỬ LÝ SỰ KIỆN FORM NHẬP KHO =================
+    // Thay đổi nguyên vật liệu
+    ingressItem.addEventListener("change", () => {
+      const selectedItemName = ingressItem.value;
+      if (INGREDIENTS_MASTER[selectedItemName]) {
+        const itemInfo = INGREDIENTS_MASTER[selectedItemName];
+        lblIngressUnit.innerText = `(Đơn vị chuẩn: ${itemInfo.stdUnit})`;
+        ingressPrice.value = itemInfo.defaultPrice;
+        
+        // Cập nhật quy đổi nếu có số lượng sẵn
+        updateIngressConversion();
+      } else {
+        lblIngressUnit.innerText = "";
+        ingressPrice.value = "";
+        ingressConversionBox.style.display = "none";
+      }
+      document.getElementById("errIngressQty").style.display = "none";
+      document.getElementById("errIngressPrice").style.display = "none";
+      checkIngressButtonState();
+    });
+
+    // Thay đổi số lượng
+    ingressQty.addEventListener("input", () => {
+      updateIngressConversion();
+      checkIngressButtonState();
+    });
+
+    ingressPrice.addEventListener("input", () => {
+      updateIngressConversion();
+      checkIngressButtonState();
+    });
+    
+    ingressWarehouse.addEventListener("change", checkIngressButtonState);
+
+    function checkIngressButtonState() {
+      const warehouse = ingressWarehouse.value;
+      const item = ingressItem.value;
+      const qtyVal = parseFloat(ingressQty.value);
+      const priceVal = parseFloat(ingressPrice.value);
+
+      const isWarehouseValid = !!warehouse;
+      const isItemValid = !!item;
+      const isQtyValid = !isNaN(qtyVal) && qtyVal > 0;
+      const isPriceValid = !isNaN(priceVal) && priceVal >= 0;
+
+      if (isWarehouseValid && isItemValid && isQtyValid && isPriceValid) {
+        btnSubmitIngress.disabled = false;
+      } else {
+        btnSubmitIngress.disabled = true;
+      }
+    }
+
+    function updateIngressConversion() {
+      const selectedItemName = ingressItem.value;
+      const qtyVal = parseFloat(ingressQty.value);
+      const priceVal = parseFloat(ingressPrice.value);
+      
+      let showSummary = false;
+
+      if (INGREDIENTS_MASTER[selectedItemName]) {
+        const itemInfo = INGREDIENTS_MASTER[selectedItemName];
+        
+        // 1. Cập nhật nhãn bằng chữ cho đơn giá nhập
+        if (!isNaN(priceVal) && priceVal >= 0) {
+          lblIngressPriceFormatted.innerText = `Bằng chữ: ${priceVal.toLocaleString('vi-VN')} VNĐ / ${itemInfo.stdUnit}`;
+          lblIngressPriceFormatted.style.display = "block";
+        } else {
+          lblIngressPriceFormatted.style.display = "none";
+        }
+
+        // 2. Cập nhật tổng số tiền và hiển thị chi tiết nhập
+        if (!isNaN(qtyVal) && qtyVal > 0 && !isNaN(priceVal) && priceVal >= 0) {
+          const total = qtyVal * priceVal;
+          lblIngressSummaryText.innerText = `Nhập "${selectedItemName}" x ${qtyVal.toLocaleString('vi-VN')} ${itemInfo.stdUnit} = ${total.toLocaleString('vi-VN')} VNĐ`;
+          showSummary = true;
+        }
+      } else {
+        lblIngressPriceFormatted.style.display = "none";
+      }
+
+      if (showSummary) {
+        ingressConversionBox.style.display = "flex";
+      } else {
+        ingressConversionBox.style.display = "none";
+      }
+    }
+
+    // Submit form nhập kho
+    ingressForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const selectedItemName = ingressItem.value;
+      const qtyVal = parseFloat(ingressQty.value);
+      const priceVal = parseFloat(ingressPrice.value);
+
+      let isValid = true;
+
+      if (!selectedItemName) {
+        alert("Vui lòng chọn hạng mục nguyên vật liệu!");
+        ingressItem.focus();
+        return;
+      }
+
+      const errQty = document.getElementById("errIngressQty");
+      if (isNaN(qtyVal) || qtyVal <= 0) {
+        errQty.style.display = "block";
+        isValid = false;
+      } else {
+        errQty.style.display = "none";
+      }
+
+      const errPrice = document.getElementById("errIngressPrice");
+      if (isNaN(priceVal) || priceVal < 0) {
+        errPrice.style.display = "block";
+        isValid = false;
+      } else {
+        errPrice.style.display = "none";
+      }
+
+      if (!isValid) return;
+
+      const itemInfo = INGREDIENTS_MASTER[selectedItemName];
+      const warehouseName = ingressWarehouse.value;
+
+      // Xác nhận từ người dùng trước khi gửi dữ liệu nhập kho
+      const totalAmount = qtyVal * priceVal;
+      const confirmMsg = `VUI LÒNG XÁC NHẬN THÔNG TIN NHẬP KHO:\n\n` +
+                         `• Mã kho nhập: ${warehouseName}\n` +
+                         `• Hạng mục: ${selectedItemName}\n` +
+                         `• Số lượng: ${qtyVal.toLocaleString('vi-VN')} ${itemInfo.stdUnit} (${(qtyVal * itemInfo.conversionRate).toLocaleString('vi-VN')} ${itemInfo.cupUnit})\n` +
+                         `• Đơn giá nhập: ${priceVal.toLocaleString('vi-VN')} VNĐ / ${itemInfo.stdUnit}\n` +
+                         `• Tổng giá trị: ${totalAmount.toLocaleString('vi-VN')} VNĐ\n\n` +
+                         `Nhấn "OK" để đồng ý gửi, nhấn "Hủy" để kiểm tra/sửa lại.`;
+      
+      if (!confirm(confirmMsg)) {
+        return; // Hủy gửi nếu người dùng nhấn Hủy (Cancel)
+      }
+
+      const formData = {
+        action: "nhapKho",
+        warehouse: warehouseName,
+        username: localStorage.getItem("today_coffee_username") || "",
+        itemName: selectedItemName,
+        stdUnit: itemInfo.stdUnit,
+        qty: qtyVal,
+        price: priceVal,
+        cupUnit: itemInfo.cupUnit,
+        cupQty: qtyVal * itemInfo.conversionRate
+      };
+
+      // Show loading overlay
+      const loadingOverlay = document.getElementById("loadingOverlay");
+      const progressBar = document.getElementById("progressBar");
+      const progressText = document.getElementById("progressText");
+
+      loadingOverlay.classList.add("active");
+      progressBar.style.width = "0%";
+      progressText.innerText = "Đang gửi dữ liệu nhập kho... 0%";
+
+      // Simulate progress up to 90%
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        if (progress < 90) {
+          const increment = Math.max(1, Math.floor((90 - progress) / 10));
+          progress += increment;
+          progressBar.style.width = `${progress}%`;
+          progressText.innerText = `Đang gửi dữ liệu nhập kho... ${progress}%`;
+        }
+      }, 100);
+
+      const originalText = btnSubmitIngress.innerText;
+      btnSubmitIngress.disabled = true;
+
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify(formData)
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Lỗi kết nối");
+          }
+          return response.json();
+        })
+        .then(res => {
+          clearInterval(progressInterval);
+          if (res.result === "success") {
+            // Smoothly complete to 100%
+            progress = 100;
+            progressBar.style.width = "100%";
+            progressText.innerText = "Đang gửi dữ liệu nhập kho... 100%";
+
+            setTimeout(() => {
+              loadingOverlay.classList.remove("active");
+
+              // Đổi text toast để thông báo
+              const originalToastSpan = successToast.querySelector("span");
+              const oldText = originalToastSpan.innerText;
+              originalToastSpan.innerText = "Ghi nhận nhập kho thành công!";
+              successToast.classList.add("show");
+
+              // Reset form nhập kho
+              ingressForm.reset();
+              ingressWarehouse.value = localStorage.getItem("today_coffee_warehouse") || "TC01";
+              lblIngressUnit.innerText = "";
+              lblIngressPriceFormatted.style.display = "none";
+              ingressConversionBox.style.display = "none";
+              btnSubmitIngress.innerText = originalText;
+              btnSubmitIngress.disabled = true;
+
+              // Quay lại tab bán hàng cho người dùng tiện thao tác
+              btnTabSales.click();
+
+              // Ẩn toast sau 3s và khôi phục text ban đầu
+              setTimeout(() => {
+                successToast.classList.remove("show");
+                setTimeout(() => {
+                  originalToastSpan.innerText = oldText;
+                }, 300);
+              }, 3000);
+            }, 500);
+          } else {
+            loadingOverlay.classList.remove("active");
+            alert("Lỗi từ server: " + res.message);
+            btnSubmitIngress.innerText = originalText;
+            btnSubmitIngress.disabled = false;
+          }
+        })
+        .catch(err => {
+          clearInterval(progressInterval);
+          loadingOverlay.classList.remove("active");
+          alert("Lỗi khi gửi dữ liệu nhập kho: " + err.message);
+          btnSubmitIngress.innerText = originalText;
+          btnSubmitIngress.disabled = false;
         });
     });
 

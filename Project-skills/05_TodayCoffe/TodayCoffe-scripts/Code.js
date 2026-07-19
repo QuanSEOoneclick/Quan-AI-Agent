@@ -76,6 +76,65 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({"result": "error", "message": "Sai mật khẩu!"}))
                            .setMimeType(ContentService.MimeType.JSON);
     }
+
+    // 2.3. LẤY DANH SÁCH HẠNG MỤC NHẬP XUẤT (Từ sheet "Danh-sach-hang-muc-nhap-xuat")
+    if (data.action === "getIngressItems") {
+      var sheet = ss.getSheetByName("Danh-sach-hang-muc-nhap-xuat");
+      if (!sheet) {
+        return ContentService.createTextOutput(JSON.stringify({"result": "error", "message": "Không tìm thấy sheet Danh-sach-hang-muc-nhap-xuat"}))
+                             .setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      var rangeData = sheet.getDataRange().getValues();
+      var items = [];
+      for (var i = 1; i < rangeData.length; i++) {
+        var name = String(rangeData[i][0]).trim();
+        var stdUnit = String(rangeData[i][1]).trim();
+        var stdQty = Number(rangeData[i][2]);
+        var cupQty = Number(rangeData[i][3]);
+        var cupUnit = String(rangeData[i][4]).trim();
+        
+        if (name) {
+          items.push({
+            name: name,
+            stdUnit: stdUnit,
+            stdQty: stdQty,
+            cupQty: cupQty,
+            cupUnit: cupUnit
+          });
+        }
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({"result": "success", "items": items}))
+                           .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // 2.5. XỬ LÝ GHI NHẬN NHẬP KHO (Vào sheet "Nhap-kho")
+    if (data.action === "nhapKho") {
+      var nhapKhoSheet = ss.getSheetByName("Nhap-kho");
+      if (!nhapKhoSheet) {
+        return ContentService.createTextOutput(JSON.stringify({"result": "error", "message": "Không tìm thấy sheet Nhap-kho"}))
+                             .setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      var row = [
+        new Date(),
+        data.warehouse || "",
+        data.username || "", // Người nhập kho
+        data.itemName || "",
+        data.stdUnit || "",
+        Number(data.qty || 0),
+        Number(data.price || 0),
+        data.cupUnit || "",
+        Number(data.cupQty || 0)
+      ];
+      
+      var lastRow = getLastDataRow(nhapKhoSheet);
+      nhapKhoSheet.getRange(lastRow + 1, 1, 1, row.length).setValues([row]);
+      
+      return ContentService.createTextOutput(JSON.stringify({"result": "success"}))
+                           .setMimeType(ContentService.MimeType.JSON);
+    }
     
     // 3. XỬ LÝ GHI NHẬN ĐƠN HÀNG (Vào sheet "Thong_ke")
     var orderSheet = ss.getSheetByName("Thong_ke");
