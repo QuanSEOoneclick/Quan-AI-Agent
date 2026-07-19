@@ -739,6 +739,103 @@
       border-color: var(--primary-green) !important;
       box-shadow: 0 4px 12px rgba(10, 77, 46, 0.15);
     }
+    /* Styles cho Dashboard Thống kê */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .analytics-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 12px;
+      box-shadow: 0 4px 10px var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .analytics-card .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .analytics-card .card-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--coffee-brown);
+    }
+    .progress-container-be {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 4px 10px var(--shadow);
+      margin-bottom: 16px;
+    }
+    .progress-bar-be-wrapper {
+      height: 12px;
+      background: var(--gray-light);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin: 10px 0;
+    }
+    .progress-bar-be {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #d97706, #15803d);
+      border-radius: 10px;
+      transition: width 0.4s ease-out;
+    }
+    .be-status-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    .analytics-table-container {
+      overflow-x: auto;
+      border-radius: 14px;
+      border: 1.5px solid var(--border);
+      box-shadow: 0 4px 10px var(--shadow);
+      background: var(--white);
+    }
+    .analytics-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .analytics-table th {
+      background: var(--primary-green);
+      color: var(--white);
+      padding: 12px 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+    .analytics-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      color: var(--text);
+    }
+    .analytics-table tr:last-child td {
+      border-bottom: none;
+    }
+    .analytics-table tr:nth-child(even) {
+      background: var(--light-cream);
+    }
+    .text-success-green {
+      color: #15803d !important;
+    }
+    .text-danger-red {
+      color: #b91c1c !important;
+    }
   </style>
 </head>
 
@@ -870,8 +967,9 @@
 
           <!-- Tab Menu Navigation -->
           <div class="tab-nav-btn-container">
-            <button type="button" id="btnTabSales" class="tab-btn active">Bán Hàng</button>
-            <button type="button" id="btnTabIngress" class="tab-btn">Nhập Kho</button>
+            <button type="button" id="btnTabSales" class="tab-btn active" style="display: none;">Bán Hàng</button>
+            <button type="button" id="btnTabIngress" class="tab-btn" style="display: none;">Nhập Kho</button>
+            <button type="button" id="btnTabAnalytics" class="tab-btn" style="display: none;">Thống kê</button>
           </div>
 
           <!-- Sales Ingress Toggle Container -->
@@ -1119,6 +1217,75 @@
               <button type="submit" class="btn-primary" id="btnSubmitIngress" style="margin-top: 20px;" disabled>Xác nhận Nhập kho</button>
             </form>
           </div>
+
+          <!-- ================= SECTION: THỐNG KÊ ================= -->
+          <div id="analyticsSection" style="display: none;">
+            <!-- Bộ lọc Thống kê -->
+            <div style="background: #faf8f5; border: 1.5px solid var(--border); border-radius: 16px; padding: 12px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 10px;">
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <div style="flex: 1; min-width: 0; position: relative;">
+                  <span style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px; display: block;">Lọc theo Tháng</span>
+                  <select id="filterAnalyticsMonth" class="select-mode" style="height: 40px; padding: 6px 30px 6px 12px; font-size: 13px;">
+                    <option value="all">Tất cả các tháng</option>
+                  </select>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                  <span style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px; display: block;">Lọc theo Ngày</span>
+                  <input type="date" id="filterAnalyticsDate" class="input-text" style="height: 40px; padding: 6px 12px; font-size: 13px;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Summary Grid -->
+            <div class="analytics-grid">
+              <div class="analytics-card">
+                <span class="card-title">Doanh Thu</span>
+                <span class="card-value" id="lblTotalRevenue">0đ</span>
+              </div>
+              <div class="analytics-card">
+                <span class="card-title">LN Chưa CP Cố Định</span>
+                <span class="card-value" id="lblGrossProfit">0đ</span>
+              </div>
+              <div class="analytics-card">
+                <span class="card-title">LN Đã Tính CP Cố Định</span>
+                <span class="card-value" id="lblNetProfit">0đ</span>
+              </div>
+              <div class="analytics-card">
+                <span class="card-title">CP Cố Định Tháng</span>
+                <span class="card-value" id="lblTotalFixedCost">0đ</span>
+              </div>
+            </div>
+
+            <!-- Tiến độ hòa vốn -->
+            <div class="progress-container-be">
+              <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--coffee-brown);">
+                <span>TIẾN ĐỘ HÒA VỐN</span>
+                <span id="lblBreakEvenProgress">0%</span>
+              </div>
+              <div class="progress-bar-be-wrapper">
+                <div id="pbBreakEven" class="progress-bar-be"></div>
+              </div>
+              <div id="lblBreakEvenDaysEst" class="be-status-text">Đang tính toán...</div>
+            </div>
+
+            <!-- Bảng số liệu hàng ngày -->
+            <div class="section-label" style="margin-bottom: 10px; font-size: 13px;">Báo Cáo Theo Ngày</div>
+            <div class="analytics-table-container">
+              <table class="analytics-table">
+                <thead>
+                  <tr>
+                    <th>Ngày</th>
+                    <th>Doanh thu</th>
+                    <th>LN trước CP</th>
+                    <th>LN sau CP</th>
+                  </tr>
+                </thead>
+                <tbody id="tblAnalyticsBody">
+                  <!-- Dữ liệu render qua JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1194,6 +1361,7 @@
     // Ingress DOM elements
     const btnTabSales = document.getElementById("btnTabSales");
     const btnTabIngress = document.getElementById("btnTabIngress");
+    const btnTabAnalytics = document.getElementById("btnTabAnalytics");
     const salesSection = document.getElementById("salesSection");
     const ingressSection = document.getElementById("ingressSection");
     const ingressForm = document.getElementById("ingressForm");
@@ -1220,7 +1388,29 @@
         ingressWarehouse.value = savedWarehouse;
         loadIngressItems();
 
-        // Không cần thao tác hiển thị/khoá dropdown Người bán vì đã loại bỏ khỏi giao diện
+        // Phân quyền cho user dựa vào cột Quyền lưu ở localStorage
+        const savedRole = localStorage.getItem("today_coffee_role") || "";
+        const hasSales = savedRole.indexOf("Bán Hàng") !== -1;
+        const hasIngress = savedRole.indexOf("Nhập Kho") !== -1;
+        const hasAnalytics = savedRole.indexOf("Thống kê") !== -1;
+
+        // Hiển thị/Ẩn các nút Tab
+        btnTabSales.style.display = hasSales ? "block" : "none";
+        btnTabIngress.style.display = hasIngress ? "block" : "none";
+        btnTabAnalytics.style.display = hasAnalytics ? "block" : "none";
+
+        // Chọn Tab hiển thị mặc định
+        if (hasSales) {
+          btnTabSales.click();
+        } else if (hasIngress) {
+          btnTabIngress.click();
+        } else if (hasAnalytics) {
+          btnTabAnalytics.click();
+        } else {
+          alert("Tài khoản của bạn chưa được cấp quyền truy cập!");
+          btnLogout.click();
+          return;
+        }
 
         // Chuyển màn hình
         loginPage.classList.remove("active");
@@ -1442,6 +1632,7 @@
             localStorage.setItem("today_coffee_logged_in", "true");
             localStorage.setItem("today_coffee_username", res.username);
             localStorage.setItem("today_coffee_warehouse", warehouse);
+            localStorage.setItem("today_coffee_role", res.role || "");
 
             loginUser.value = "";
             loginWarehouse.value = "TC01";
@@ -1473,12 +1664,15 @@
       localStorage.removeItem("today_coffee_logged_in");
       localStorage.removeItem("today_coffee_username");
       localStorage.removeItem("today_coffee_warehouse");
+      localStorage.removeItem("today_coffee_role");
       lblAccountName.innerText = "...";
       // Trở lại tab Bán hàng mặc định
       btnTabSales.classList.add("active");
       btnTabIngress.classList.remove("active");
+      btnTabAnalytics.classList.remove("active");
       salesSection.style.display = "block";
       ingressSection.style.display = "none";
+      document.getElementById("analyticsSection").style.display = "none";
       checkLoginStatus();
     });
 
@@ -1889,22 +2083,159 @@
         });
     });
 
-    // ================= XỬ LÝ CHUYỂN TABS (BÁN HÀNG / NHẬP KHO) =================
+    // ================= XỬ LÝ CHUYỂN TABS (BÁN HÀNG / NHẬP KHO / THỐNG KÊ) =================
     btnTabSales.addEventListener("click", () => {
       btnTabSales.classList.add("active");
       btnTabIngress.classList.remove("active");
+      btnTabAnalytics.classList.remove("active");
       salesSection.style.display = "block";
       ingressSection.style.display = "none";
+      document.getElementById("analyticsSection").style.display = "none";
     });
 
     btnTabIngress.addEventListener("click", () => {
       btnTabIngress.classList.add("active");
       btnTabSales.classList.remove("active");
+      btnTabAnalytics.classList.remove("active");
       salesSection.style.display = "none";
       ingressSection.style.display = "block";
+      document.getElementById("analyticsSection").style.display = "none";
       // Focus vào select hạng mục
       ingressItem.focus();
     });
+
+    btnTabAnalytics.addEventListener("click", () => {
+      btnTabAnalytics.classList.add("active");
+      btnTabSales.classList.remove("active");
+      btnTabIngress.classList.remove("active");
+      salesSection.style.display = "none";
+      ingressSection.style.display = "none";
+      document.getElementById("analyticsSection").style.display = "block";
+      
+      loadAnalyticsData();
+    });
+
+    // Lắng nghe thay đổi bộ lọc
+    document.getElementById("filterAnalyticsMonth").addEventListener("change", () => {
+      loadAnalyticsData();
+    });
+    
+    document.getElementById("filterAnalyticsDate").addEventListener("change", () => {
+      loadAnalyticsData();
+    });
+
+    // Tải dữ liệu báo cáo thống kê từ Backend
+    function loadAnalyticsData() {
+      const loadingOverlay = document.getElementById("loadingOverlay");
+      const progressBar = document.getElementById("progressBar");
+      const progressText = document.getElementById("progressText");
+
+      loadingOverlay.classList.add("active");
+      progressBar.style.width = "20%";
+      progressText.innerText = "Đang tải dữ liệu báo cáo... 20%";
+      
+      const warehouse = localStorage.getItem("today_coffee_warehouse") || "TC01";
+      const monthFilter = document.getElementById("filterAnalyticsMonth").value || "all";
+      const dateFilter = document.getElementById("filterAnalyticsDate").value || "";
+      
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({
+          action: "getAnalytics",
+          warehouse: warehouse,
+          month: monthFilter,
+          date: dateFilter
+        })
+      })
+      .then(response => {
+        progressBar.style.width = "60%";
+        progressText.innerText = "Đang xử lý dữ liệu... 60%";
+        if (!response.ok) {
+          throw new Error("Lỗi kết nối");
+        }
+        return response.json();
+      })
+      .then(res => {
+        progressBar.style.width = "90%";
+        progressText.innerText = "Đang hoàn tất hiển thị... 90%";
+        
+        if (res.result === "success") {
+          // Hiển thị trị số tích lũy
+          document.getElementById("lblTotalRevenue").innerText = `${res.summary.totalRevenue.toLocaleString('vi-VN')}đ`;
+          document.getElementById("lblGrossProfit").innerText = `${res.summary.totalProfitBeforeFixedCost.toLocaleString('vi-VN')}đ`;
+          document.getElementById("lblNetProfit").innerText = `${res.summary.totalProfitAfterFixedCost.toLocaleString('vi-VN')}đ`;
+          document.getElementById("lblTotalFixedCost").innerText = `${res.summary.totalFixedCostMonthly.toLocaleString('vi-VN')}đ`;
+          
+          // Đổi màu trị số Lợi nhuận ròng dựa trên lãi/lỗ
+          const lblNet = document.getElementById("lblNetProfit");
+          if (res.summary.totalProfitAfterFixedCost >= 0) {
+            lblNet.className = "card-value text-success-green";
+          } else {
+            lblNet.className = "card-value text-danger-red";
+          }
+          
+          // Cập nhật Tiến độ hòa vốn
+          document.getElementById("lblBreakEvenProgress").innerText = `${res.summary.breakEvenProgress}%`;
+          document.getElementById("pbBreakEven").style.width = `${res.summary.breakEvenProgress}%`;
+          document.getElementById("lblBreakEvenDaysEst").innerText = res.summary.breakEvenDaysEst;
+          
+          // Cập nhật danh sách bộ lọc tháng động
+          const monthSelect = document.getElementById("filterAnalyticsMonth");
+          const selectedMonth = monthSelect.value || "all";
+          
+          monthSelect.innerHTML = '<option value="all">Tất cả các tháng</option>';
+          if (res.availableMonths && res.availableMonths.length > 0) {
+            res.availableMonths.forEach(m => {
+              const opt = document.createElement("option");
+              opt.value = m;
+              opt.innerText = `Tháng ${m}`;
+              monthSelect.appendChild(opt);
+            });
+          }
+          monthSelect.value = selectedMonth;
+          
+          // Cập nhật bảng thống kê hàng ngày
+          const tbody = document.getElementById("tblAnalyticsBody");
+          tbody.innerHTML = "";
+          
+          if (res.dailyStats && res.dailyStats.length > 0) {
+            res.dailyStats.forEach(day => {
+              const tr = document.createElement("tr");
+              
+              // Định dạng hiển thị ngày dd/mm/yyyy
+              const parts = day.date.split("-");
+              const dateFormatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
+              
+              const gpClass = day.profitBeforeFixedCost >= 0 ? "text-success-green" : "text-danger-red";
+              const npClass = day.profitAfterFixedCost >= 0 ? "text-success-green" : "text-danger-red";
+              
+              tr.innerHTML = `
+                <td>${dateFormatted}</td>
+                <td>${day.revenue.toLocaleString('vi-VN')}đ</td>
+                <td class="${gpClass}">${day.profitBeforeFixedCost.toLocaleString('vi-VN')}đ</td>
+                <td class="${npClass}">${day.profitAfterFixedCost.toLocaleString('vi-VN')}đ</td>
+              `;
+              tbody.appendChild(tr);
+            });
+          } else {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 20px;">Chưa có dữ liệu bán hàng.</td></tr>`;
+          }
+          
+          progressBar.style.width = "100%";
+          setTimeout(() => {
+            loadingOverlay.classList.remove("active");
+          }, 300);
+        } else {
+          loadingOverlay.classList.remove("active");
+          alert("Lỗi tải báo cáo: " + res.message);
+        }
+      })
+      .catch(err => {
+        loadingOverlay.classList.remove("active");
+        alert("Lỗi kết nối server: " + err.message);
+      });
+    }
 
     // ================= XỬ LÝ SỰ KIỆN FORM NHẬP KHO =================
     // Thay đổi nguyên vật liệu

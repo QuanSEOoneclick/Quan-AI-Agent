@@ -68,7 +68,8 @@ function doPost(e) {
         
         if (dbUser === username && dbPass === password) {
           var displayName = String(loginData[i][0]).trim();
-          return ContentService.createTextOutput(JSON.stringify({"result": "success", "username": displayName}))
+          var role = String(loginData[i][2] || "").trim();
+          return ContentService.createTextOutput(JSON.stringify({"result": "success", "username": displayName, "role": role}))
                                .setMimeType(ContentService.MimeType.JSON);
         }
       }
@@ -123,16 +124,27 @@ function doPost(e) {
         data.username || "", // Người nhập kho
         data.itemName || "",
         data.stdUnit || "",
-        Number(data.qty || 0),
-        Number(data.price || 0),
+        Number(data.price || 0), // Giá Bán Theo Đơn Vị Chuẩn (VNĐ)
+        Number(data.qty || 0), // Số Lượng Nhập Kho Theo Đơn Vị Chuẩn
+        Number(data.price || 0) * Number(data.qty || 0), // Thành Tiền Theo Đơn Vị Chuẩn
         data.cupUnit || "",
-        Number(data.cupQty || 0)
+        Number(data.cupQty || 0) // Số Lượng Nhập Kho Theo Đơn Vị / Ly Nước
       ];
       
       var lastRow = getLastDataRow(nhapKhoSheet);
       nhapKhoSheet.getRange(lastRow + 1, 1, 1, row.length).setValues([row]);
       
       return ContentService.createTextOutput(JSON.stringify({"result": "success"}))
+                           .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 2.7. XỬ LÝ LẤY DỮ LIỆU THỐNG KÊ (Cho Web POS)
+    if (data.action === "getAnalytics") {
+      var warehouse = data.warehouse || "TC01";
+      var monthFilter = data.month || "";
+      var dateFilter = data.date || "";
+      var analyticsResult = getAnalyticsData(ss, warehouse, monthFilter, dateFilter);
+      return ContentService.createTextOutput(JSON.stringify(analyticsResult))
                            .setMimeType(ContentService.MimeType.JSON);
     }
     
@@ -208,4 +220,177 @@ function getLastDataRow(sheet) {
     }
   }
   return 1;
+}
+
+// Hàm bổ trợ lấy dữ liệu thống kê từ Sheet cho Web POS
+function getAnalyticsData(ss, warehouse, monthFilter, dateFilter) {
+  var orderSheet = ss.getSheetByName("Thong_ke");
+  var fixedCostSheet = ss.getSheetByName("Chi-phi-co-dinh");
+  
+  if (!orderSheet || !fixedCostSheet) {
+    return {"result": "error", "message": "Không tìm thấy sheet dữ liệu!"};
+  }
+  
+  var orderData = orderSheet.getDataRange().getValues();
+  var fixedCostData = fixedCostSheet.getDataRange().getValues();
+  
+  var dailyStats = {};
+  var totalRevenue = 0;
+  var totalIngredientCost = 0;
+  var totalFixedCostAllocated = 0;
+  var allMonths = [];
+  
+  // 1. Phân tích dữ liệu đơn hàng
+  for (var i = 1; i < orderData.length; i++) {
+    var row = orderData[i];
+    var rowDateStr = String(row[0]).trim();
+    if (!rowDateStr) continue;
+    
+    var rowWarehouse = String(row[1]).trim();
+    if (rowWarehouse !== warehouse) continue;
+    
+    var dateObj = new Date(row[0]);
+    if (isNaN(dateObj.getTime())) continue;
+    
+    // Trích xuất thông tin tháng/năm MM/YYYY
+    var mm = String(dateObj.getMonth() + 1);
+    if (mm.length < 2) mm = "0" + mm;
+    var yyyy = dateObj.getFullYear();
+    var mKey = mm + "/" + yyyy;
+    
+    if (allMonths.indexOf(mKey) === -1) {
+      allMonths.push(mKey);
+    }
+    
+    // Áp dụng bộ lọc tháng (nếu có)
+    if (monthFilter && monthFilter !== "all" && mKey !== monthFilter) continue;
+    
+    // Áp dụng bộ lọc ngày (nếu có)
+    var dateKey = Utilities.formatDate(dateObj, Session.getScriptTimeZone(), "yyyy-MM-dd");
+    if (dateFilter && dateKey !== dateFilter) continue;
+    
+    // Đọc doanh thu (Cột I, chỉ số 8) và Chi phí cố định (Cột AC, chỉ số 28)
+    var revenue = Number(row[8] || 0);
+    var fixedCostAlloc = Number(row[28] || 0);
+    
+    // Tính tổng chi phí nguyên liệu (Cột N đến X, chỉ số từ 13 đến 23)
+    var ingredientCost = 0;
+    for (var col = 13; col <= 23; col++) {
+      ingredientCost += Number(row[col] || 0);
+    }
+    
+    if (!dailyStats[dateKey]) {
+      dailyStats[dateKey] = {
+        date: dateKey,
+        revenue: 0,
+        ingredientCost: 0,
+        fixedCostAllocated: 0
+      };
+    }
+    
+    dailyStats[dateKey].revenue += revenue;
+    dailyStats[dateKey].ingredientCost += ingredientCost;
+    dailyStats[dateKey].fixedCostAllocated += fixedCostAlloc;
+    
+    totalRevenue += revenue;
+    totalIngredientCost += ingredientCost;
+    totalFixedCostAllocated += fixedCostAlloc;
+  }
+  
+  // Chuyển sang danh sách mảng và sắp xếp ngày giảm dần
+  var dailyList = [];
+  for (var key in dailyStats) {
+    var stat = dailyStats[key];
+    stat.profitBeforeFixedCost = stat.revenue - stat.ingredientCost;
+    stat.profitAfterFixedCost = stat.revenue - stat.ingredientCost - stat.fixedCostAllocated;
+    dailyList.push(stat);
+  }
+  dailyList.sort(function(a, b) {
+    return b.date.localeCompare(a.date);
+  });
+  
+  // Sắp xếp các tháng giảm dần
+  allMonths.sort(function(a, b) {
+    var partsA = a.split("/");
+    var partsB = b.split("/");
+    return (partsB[1] + partsB[0]).localeCompare(partsA[1] + partsA[0]);
+  });
+  
+  // 2. Tính tổng Chi phí cố định thực tế trong tháng của kho này
+  var targetMonth = monthFilter && monthFilter !== "all" ? monthFilter : "";
+  if (!targetMonth && dailyList.length > 0) {
+    var latestDate = new Date(dailyList[0].date);
+    var mm = String(latestDate.getMonth() + 1);
+    if (mm.length < 2) mm = "0" + mm;
+    var yyyy = latestDate.getFullYear();
+    targetMonth = mm + "/" + yyyy;
+  }
+  
+  var totalFixedCostMonthly = 0;
+  var colIdx = -1;
+  
+  if (targetMonth && fixedCostData.length > 0) {
+    var headers = fixedCostData[0];
+    for (var c = 2; c < headers.length; c++) {
+      var headerVal = String(headers[c]).trim();
+      if (headerVal === targetMonth || headerVal.indexOf(targetMonth) !== -1) {
+        colIdx = c;
+        break;
+      }
+      if (headers[c] instanceof Date) {
+        var hDate = headers[c];
+        var hmm = String(hDate.getMonth() + 1);
+        if (hmm.length < 2) hmm = "0" + hmm;
+        var hyyyy = hDate.getFullYear();
+        if ((hmm + "/" + hyyyy) === targetMonth) {
+          colIdx = c;
+          break;
+        }
+      }
+    }
+    
+    if (colIdx !== -1) {
+      for (var r = 1; r < fixedCostData.length; r++) {
+        var rowWarehouse = String(fixedCostData[r][0]).trim();
+        if (rowWarehouse === warehouse) {
+          totalFixedCostMonthly += Number(fixedCostData[r][colIdx] || 0);
+        }
+      }
+    }
+  }
+  
+  // 3. Phân tích Hòa vốn
+  var totalProfitBeforeFixedCost = totalRevenue - totalIngredientCost;
+  var breakEvenProgress = 0;
+  var breakEvenDaysEst = "Chưa có đủ dữ liệu";
+  
+  if (totalFixedCostMonthly > 0) {
+    breakEvenProgress = Math.min(100, Math.round((totalProfitBeforeFixedCost / totalFixedCostMonthly) * 100));
+    
+    var numDays = Object.keys(dailyStats).length;
+    if (numDays > 0 && totalProfitBeforeFixedCost > 0) {
+      var avgDailyProfit = totalProfitBeforeFixedCost / numDays;
+      var remainingCost = totalFixedCostMonthly - totalProfitBeforeFixedCost;
+      if (remainingCost <= 0) {
+        breakEvenDaysEst = "Đã hòa vốn tháng này!";
+      } else {
+        var remainingDays = Math.ceil(remainingCost / avgDailyProfit);
+        breakEvenDaysEst = "Ước tính hòa vốn sau ~" + remainingDays + " ngày bán hàng nữa";
+      }
+    }
+  }
+  
+  return {
+    result: "success",
+    summary: {
+      totalRevenue: totalRevenue,
+      totalProfitBeforeFixedCost: totalProfitBeforeFixedCost,
+      totalProfitAfterFixedCost: totalRevenue - totalIngredientCost - totalFixedCostAllocated,
+      totalFixedCostMonthly: totalFixedCostMonthly,
+      breakEvenProgress: breakEvenProgress,
+      breakEvenDaysEst: breakEvenDaysEst
+    },
+    dailyStats: dailyList,
+    availableMonths: allMonths
+  };
 }
