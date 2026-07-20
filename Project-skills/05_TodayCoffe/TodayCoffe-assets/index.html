@@ -45,6 +45,19 @@
       width: 100%;
       max-width: 480px;
       padding: 12px 12px 30px 12px;
+      transition: max-width 0.2s ease-out;
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        max-width: 100%;
+        padding: 20px 20px 40px 20px;
+      }
+    }
+    @media (min-width: 1200px) {
+      .container {
+        max-width: 1200px;
+      }
     }
 
     /* Card Container */
@@ -907,6 +920,182 @@
     .menu-item-row:active {
       transform: scale(0.98);
     }
+
+    /* Bố cục Responsive & 2 Cột trên Desktop */
+    .pos-grid-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .pos-grid-container {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 20px;
+        align-items: start;
+      }
+
+      /* Banner giới hạn chiều cao trên desktop để đỡ chiếm diện tích */
+      .banner-container {
+        max-height: 220px;
+        overflow: hidden;
+      }
+
+      .banner-img {
+        object-fit: cover;
+        object-position: center;
+        height: 220px;
+      }
+
+      /* Trải các tab ra hàng ngang */
+      .tab-nav-btn-container {
+        overflow-x: visible;
+        white-space: normal;
+        flex-wrap: wrap;
+      }
+
+      /* Tăng số cột báo cáo thành 4 cột */
+      .analytics-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .analytics-flex-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      /* Chia danh sách đơn hẹn trước thành 2 cột */
+      #preOrdersListContainer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+    }
+
+    /* Giới hạn độ rộng các Form độc lập để không bị giãn quá mức trên desktop */
+    #loginPage .form-content {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    #ingressForm {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Giao diện Menu Bảng giá mới */
+    .menu-board-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 1200px) {
+      .menu-board-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+    }
+
+    .menu-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      transition: var(--transition);
+      cursor: pointer;
+      background: linear-gradient(135deg, #fdfbf7, #f5f1e9);
+      box-shadow: 0 2px 4px rgba(62, 39, 19, 0.02);
+    }
+
+    .menu-item-row:hover {
+      border-color: var(--primary-green) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(10, 77, 46, 0.06);
+    }
+
+    .menu-item-row:active {
+      transform: scale(0.98);
+    }
+
+    .menu-item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .menu-item-icon {
+      font-size: 22px;
+      background: #efebe4;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .menu-item-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      text-align: left;
+    }
+
+    .menu-item-name {
+      font-weight: 700;
+      font-size: 13.5px;
+      color: var(--coffee-brown);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .menu-item-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .menu-item-sizes {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .size-badge {
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      color: var(--text-secondary);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: var(--transition);
+    }
+
+    .size-badge:hover {
+      border-color: var(--primary-green);
+      color: var(--primary-green);
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .spinning-icon {
+      animation: spin 0.8s linear infinite;
+    }
   </style>
 </head>
 
@@ -943,10 +1132,14 @@
       <!-- ================= PAGE 1: ĐĂNG NHẬP ================= -->
       <div id="loginPage" class="page-section active">
         <div class="form-content">
-          <div class="login-title">Đăng Nhập POS</div>
+          <div class="login-title" style="text-transform: none; letter-spacing: normal; display: flex; flex-direction: column; gap: 6px; margin-bottom: 28px;">
+            <span style="font-size: 19px; font-weight: 800; color: var(--coffee-brown);">Today Coffee Xin Chào!</span>
+            <span style="font-size: 12.5px; font-weight: 600; color: var(--text-secondary); line-height: 1.5; padding: 0 10px;">Chúc bạn một ngày mới thật tràn đầy năng lượng ☕</span>
+          </div>
 
           <form id="loginForm">
-            <!-- Tên đăng nhập -->
+            <div id="loginInputsContainer" style="display: none;">
+              <!-- Tên đăng nhập -->
             <div class="form-group">
               <div class="section-label">
                 <svg viewBox="0 0 24 24">
@@ -1013,10 +1206,21 @@
               </div>
             </div>
 
-            <button type="submit" class="btn-primary" id="btnLoginSubmit">Đăng Nhập</button>
+            </div>
+
+            <button type="submit" class="btn-primary" id="btnLoginSubmit" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 16px; height: auto; gap: 3px; line-height: 1.2;">
+              <span style="font-size: 14.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Đăng Nhập</span>
+              <span style="font-size: 11px; font-weight: 500; opacity: 0.9;">(Tích điểm đổi nước)</span>
+            </button>
             <button type="button" class="btn-primary" id="btnPreOrderCustomer"
-              style="background: linear-gradient(135deg, #d97706, #b45309); box-shadow: 0 6px 15px rgba(217, 119, 6, 0.25); margin-top: 10px;">Đặt
-              Trước Nước</button>
+              style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 16px; height: auto; gap: 3px; line-height: 1.2; background: linear-gradient(135deg, #d97706, #b45309); box-shadow: 0 6px 15px rgba(217, 119, 6, 0.25); margin-top: 12px;">
+              <span style="font-size: 14.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Đặt Nhanh</span>
+              <span style="font-size: 11px; font-weight: 500; opacity: 0.9;">(Không đăng nhập, không tích điểm)</span>
+            </button>
+            <button type="button" class="btn-primary" id="btnBackToSelection"
+              style="display: none; align-items: center; justify-content: center; padding: 10px 16px; height: auto; background: #fafafa; border: 1.5px solid var(--border); color: var(--text-secondary); box-shadow: none; margin-top: 12px; font-weight: 700; text-transform: uppercase; font-size: 13.5px; letter-spacing: 0.5px;">
+              Quay Lại
+            </button>
             <div class="error-msg" id="loginError">Sai tên đăng nhập hoặc mật khẩu!</div>
           </form>
         </div>
@@ -1030,7 +1234,7 @@
           <div
             style="display: flex; align-items: center; margin-bottom: 16px; border-bottom: 1.5px solid var(--border); padding-bottom: 8px;">
             <span style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">
-              Xin chào, <span id="lblAccountName" style="color: var(--primary-green);">...</span>
+              Xin chào, <span id="lblAccountName" style="color: var(--primary-green); cursor: pointer; text-decoration: underline;" title="Click để xem Trang cá nhân">...</span>
             </span>
             <button type="button" class="btn-logout" id="btnLogout">
               Đăng xuất
@@ -1048,11 +1252,15 @@
             <button type="button" id="btnTabManagePreOrders" class="tab-btn" style="display: none;">Quản lý Hẹn</button>
             <button type="button" id="btnTabIngress" class="tab-btn" style="display: none;">Nhập Kho</button>
             <button type="button" id="btnTabAnalytics" class="tab-btn" style="display: none;">Thống kê</button>
+            <button type="button" id="btnTabManageWallet" class="tab-btn" style="display: none;">Quản lý Ví</button>
+            <button type="button" id="btnTabProfile" class="tab-btn" style="display: none;">Tài Khoản</button>
           </div>
 
           <!-- Sales Ingress Toggle Container -->
-          <div id="salesSection">
-            <!-- Bảng giá & Menu trực quan ở đầu trang Bán Hàng -->
+          <div id="salesSection" class="pos-grid-container">
+            <!-- Cột trái: Bảng giá và Chọn món -->
+            <div class="pos-col-left" style="display: flex; flex-direction: column; gap: 16px;">
+              <!-- Bảng giá & Menu trực quan ở đầu trang Bán Hàng -->
             <div
               style="background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 20px; box-shadow: 0 4px 10px var(--shadow);">
               <div class="section-label"
@@ -1065,96 +1273,15 @@
               </div>
 
               <!-- Menu grid layout -->
-              <div style="display: flex; flex-direction: column; gap: 8px;" id="salesMenuBoard">
-                <!-- Item: Cà phê đá -->
-                <div class="menu-item-row"
-                  style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 12px; transition: all 0.2s ease; cursor: pointer; background: linear-gradient(135deg, #fdfbf7, #f5f1e9); box-shadow: 0 2px 4px rgba(0,0,0,0.01);"
-                  onclick="quickSelectSalesMenu('Cà phê đá')">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <div
-                      style="font-size: 20px; background: #efebe4; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
-                      ☕</div>
-                    <div>
-                      <div style="font-weight: 700; font-size: 13.5px; color: var(--coffee-brown);">Cà phê đá</div>
-                      <div style="font-size: 11px; color: var(--text-secondary); margin-top: 1px;">Phin đậm vị, truyền
-                        thống</div>
-                    </div>
-                  </div>
-                  <div style="display: flex; gap: 8px;">
-                    <span
-                      style="font-size: 11px; font-weight: 700; background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; color: var(--text-secondary); box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
-                      onclick="event.stopPropagation(); quickSelectSalesMenu('Cà phê đá', 'Nhỏ')">S: 15k</span>
-                    <span
-                      style="font-size: 11px; font-weight: 700; background: var(--primary-green); border: 1px solid var(--primary-green); border-radius: 8px; padding: 5px 8px; color: var(--white); box-shadow: 0 1px 2px rgba(0,0,0,0.15);"
-                      onclick="event.stopPropagation(); quickSelectSalesMenu('Cà phê đá', 'Lớn')">L: 17k</span>
-                  </div>
-                </div>
-                <!-- Item: Cà phê sữa -->
-                <div class="menu-item-row"
-                  style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 12px; transition: all 0.2s ease; cursor: pointer; background: linear-gradient(135deg, #fdfbf7, #f5f1e9); box-shadow: 0 2px 4px rgba(0,0,0,0.01);"
-                  onclick="quickSelectSalesMenu('Cà phê sữa')">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <div
-                      style="font-size: 20px; background: #efebe4; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
-                      🥤</div>
-                    <div>
-                      <div style="font-weight: 700; font-size: 13.5px; color: var(--coffee-brown);">Cà phê sữa</div>
-                      <div style="font-size: 11px; color: var(--text-secondary); margin-top: 1px;">Sữa béo ngọt ngào,
-                        đậm đà</div>
-                    </div>
-                  </div>
-                  <div style="display: flex; gap: 8px;">
-                    <span
-                      style="font-size: 11px; font-weight: 700; background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; color: var(--text-secondary); box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
-                      onclick="event.stopPropagation(); quickSelectSalesMenu('Cà phê sữa', 'Nhỏ')">S: 17k</span>
-                    <span
-                      style="font-size: 11px; font-weight: 700; background: var(--primary-green); border: 1px solid var(--primary-green); border-radius: 8px; padding: 5px 8px; color: var(--white); box-shadow: 0 1px 2px rgba(0,0,0,0.15);"
-                      onclick="event.stopPropagation(); quickSelectSalesMenu('Cà phê sữa', 'Lớn')">L: 19k</span>
-                  </div>
-                </div>
-                <!-- Item: Bạc xỉu -->
-                <div class="menu-item-row"
-                  style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 12px; transition: all 0.2s ease; cursor: pointer; background: linear-gradient(135deg, #fdfbf7, #f5f1e9); box-shadow: 0 2px 4px rgba(0,0,0,0.01);"
-                  onclick="quickSelectSalesMenu('Bạc xỉu')">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <div
-                      style="font-size: 20px; background: #efebe4; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
-                      🥛</div>
-                    <div>
-                      <div style="font-weight: 700; font-size: 13.5px; color: var(--coffee-brown);">Bạc xỉu</div>
-                      <div style="font-size: 11px; color: var(--text-secondary); margin-top: 1px;">Sữa tươi béo và hương
-                        cà phê</div>
-                    </div>
-                  </div>
-                  <div style="display: flex; gap: 8px;">
-                    <span
-                      style="font-size: 11px; font-weight: 700; background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; color: var(--text-secondary); box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
-                      onclick="event.stopPropagation(); quickSelectSalesMenu('Bạc xỉu', 'Nhỏ')">S: 18k</span>
-                    <span
-                      style="font-size: 11px; font-weight: 700; background: var(--primary-green); border: 1px solid var(--primary-green); border-radius: 8px; padding: 5px 8px; color: var(--white); box-shadow: 0 1px 2px rgba(0,0,0,0.15);"
-                      onclick="event.stopPropagation(); quickSelectSalesMenu('Bạc xỉu', 'Lớn')">L: 20k</span>
-                  </div>
-                </div>
+              <div class="menu-board-grid" id="salesMenuBoard">
+                 <!-- Tải động từ JS -->
               </div>
               <div
                 style="font-size: 10px; color: var(--text-secondary); margin-top: 8px; font-style: italic; font-weight: 500;">
                 💡 Chạm nhanh vào tên món hoặc các nút size (S/L) để chọn nhanh.</div>
             </div>
 
-            <!-- 1. LOẠI ĐƠN HÀNG (Full Width) -->
-            <div class="form-group" style="margin-bottom: 20px;">
-              <div class="section-label">
-                <svg viewBox="0 0 24 24">
-                  <path
-                    d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z" />
-                </svg>
-                Loại đơn hàng
-              </div>
-              <select id="orderMode" class="select-mode">
-                <option value="single" selected>Đơn lẻ (Gửi nhanh 1 món)</option>
-                <option value="multiple">Đơn nhiều (Thêm giỏ hàng)</option>
-              </select>
-            </div>
+
 
             <!-- 2. CHỌN MÓN (Selection Area) -->
             <div
@@ -1216,6 +1343,24 @@
                 Thêm vào đơn
               </button>
             </div>
+          </div> <!-- Close pos-col-left -->
+
+          <!-- Cột phải: Loại đơn hàng, Giỏ hàng và Form gửi đơn -->
+          <div class="pos-col-right" style="display: flex; flex-direction: column; gap: 16px;">
+            <!-- 1. LOẠI ĐƠN HÀNG -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <div class="section-label">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z" />
+                </svg>
+                Loại đơn hàng
+              </div>
+              <select id="orderMode" class="select-mode">
+                <option value="single" selected>Đơn lẻ (Gửi nhanh 1 món)</option>
+                <option value="multiple">Đơn nhiều (Thêm giỏ hàng)</option>
+              </select>
+            </div>
 
             <!-- 3. GIỎ HÀNG -->
             <div class="cart-section" id="cartSection">
@@ -1243,13 +1388,69 @@
                   </svg>
                   Thanh toán
                 </div>
-                <div class="options-grid">
+                <div class="options-grid" style="grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));">
                   <input type="radio" name="payment" id="pay_ck" value="Chuyển khoản">
                   <label for="pay_ck">Chuyển khoản</label>
                   <input type="radio" name="payment" id="pay_tm" value="Tiền mặt">
                   <label for="pay_tm">Tiền mặt</label>
+                  <input type="radio" name="payment" id="pay_vi" value="Ví TodayCoffe">
+                  <label for="pay_vi" id="lblPayViOption" style="display: none;">Ví TodayCoffe</label>
                 </div>
                 <div class="error-text" id="errPayment">Vui lòng chọn hình thức thanh toán!</div>
+              </div>
+
+              <!-- VietQR Section -->
+              <div id="vietQrSection" style="display: none; background: #faf8f5; border: 1.5px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                <div style="display: flex; gap: 40px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                  <!-- Cột bên trái: Chi tiết thông tin chuyển khoản -->
+                  <div style="min-width: 220px; display: flex; flex-direction: column; gap: 8px; text-align: left;">
+                    <div style="font-size: 12px; font-weight: 700; color: var(--coffee-brown); letter-spacing: 0.5px; border-bottom: 1px dashed var(--border); padding-bottom: 6px;">QUÉT MÃ QR ĐỂ THANH TOÁN</div>
+                    <div style="font-size: 11.5px; color: var(--text-main); line-height: 1.6; display: flex; flex-direction: column; gap: 4px;">
+                      <div>Ngân hàng: <strong id="lblQrBank" style="font-weight: 700;">MB</strong></div>
+                      <div>Số tài khoản: <strong id="lblQrAccountNo" style="font-weight: 700; font-size: 12px; letter-spacing: 0.5px;">0961104163</strong></div>
+                      <div>Chủ tài khoản: <strong id="lblQrAccountName" style="font-weight: 700;">TRAN NGOC HUNG QUAN</strong></div>
+                      <div>Nội dung CK: <strong id="lblQrNote" style="font-weight: 700; color: #b45309;">ORD-...</strong></div>
+                      <div style="margin-top: 4px; padding-top: 6px; border-top: 1px dashed var(--border); font-size: 12px;">Số tiền: <strong id="lblQrAmount" style="color: #1b4d3e; font-weight: 800; font-size: 14.5px;">0đ</strong></div>
+                    </div>
+                  </div>
+                  <!-- Cột bên phải: Hình ảnh QR Code phóng to tối đa -->
+                  <div style="display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
+                    <img id="imgVietQr" src="" style="width: 100%; max-width: 250px; aspect-ratio: 1; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid var(--border);" alt="VietQR">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ví Tích Lũy -->
+              <div class="form-group" id="walletPaymentSection" style="display: none; background: #fdfbf7; border: 1.5px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 13px; font-weight: 700; color: var(--coffee-brown); display: flex; align-items: center; gap: 4px;">
+                    <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: var(--coffee-brown);"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    Sử dụng ví tích lũy
+                  </span>
+                  <span style="font-size: 12px; color: var(--text-secondary); font-weight: 600;" id="lblWalletPaymentAvailable">Số dư: 0đ</span>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;" id="chkUseWalletContainer">
+                  <input type="checkbox" id="chkUseWallet" style="width: 18px; height: 18px; cursor: pointer;">
+                  <label for="chkUseWallet" style="font-size: 12.5px; font-weight: 600; color: var(--text-main); cursor: pointer;">Dùng tối đa số dư ví</label>
+                </div>
+                <div id="walletDetailSummary" style="display: none; border-top: 1px dashed var(--border); margin-top: 10px; padding-top: 8px; font-size: 12px; display: flex; flex-direction: column; gap: 4px;">
+                  <div style="display: flex; justify-content: space-between;">
+                    <span>Tổng tiền món:</span>
+                    <span id="lblWalletTotalOriginal">0đ</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; color: #b45309; font-weight: 600;">
+                    <span>Trừ ví tích lũy:</span>
+                    <span id="lblWalletDeduction">-0đ</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; color: #475569; font-weight: 600; display: none;" id="divWalletRemainingRow">
+                    <span>Số dư ví còn lại sau mua:</span>
+                    <span id="lblWalletRemaining">0đ</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--primary-green);">
+                    <span>Cần thanh toán thêm:</span>
+                    <span id="lblWalletTotalPayable">0đ</span>
+                  </div>
+                </div>
               </div>
 
               <!-- Ghi chú -->
@@ -1273,12 +1474,16 @@
               <!-- Nút Gửi toàn bộ đơn -->
               <button type="submit" class="btn-primary" id="btnSubmitOrder" disabled>Gửi đơn hàng (0đ)</button>
             </form>
-          </div> <!-- Close #salesSection -->
+          </div> <!-- Close pos-col-right -->
+        </div> <!-- Close #salesSection -->
 
           <!-- ================= SECTION: ĐẶT TRƯỚC (CUSTOMER / STAFF PRE-ORDER) ================= -->
           <div id="preOrderSection" style="display: none;">
             <div id="preOrderFormWrapper">
-              <!-- Hộp hiển thị Lợi ích của Đặt trước nước -->
+              <form id="preOrderForm" class="pos-grid-container" novalidate>
+                <!-- Cột trái: Lợi ích, Bảng giá & Menu, Chọn Món -->
+                <div class="pos-col-left" style="display: flex; flex-direction: column; gap: 16px;">
+                  <!-- Hộp hiển thị Lợi ích của Đặt trước nước -->
             <div
               style="background: #eefdf4; border: 1.5px solid #bbf7d0; border-radius: 16px; padding: 14px 16px; margin-bottom: 16px;">
               <div
@@ -1310,84 +1515,80 @@
                 Bảng Giá & Menu Hôm Nay
               </div>
 
-              <div style="display: flex; flex-direction: column; gap: 8px;" id="menuBoard">
-                <!-- Item: Cà phê đá -->
-                <div class="menu-item-row"
-                  style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 12px; transition: all 0.2s ease; cursor: pointer; background: linear-gradient(135deg, #fdfbf7, #f5f1e9); box-shadow: 0 2px 4px rgba(0,0,0,0.01);"
-                  onclick="quickSelectMenu('Cà phê đá')">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <div
-                      style="font-size: 20px; background: #efebe4; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
-                      ☕</div>
-                    <div>
-                      <div style="font-weight: 700; font-size: 13.5px; color: var(--coffee-brown);">Cà phê đá</div>
-                      <div style="font-size: 11px; color: var(--text-secondary); margin-top: 1px;">Phin đậm vị, truyền
-                        thống</div>
-                    </div>
-                  </div>
-                  <div style="display: flex; gap: 8px;">
-                    <span
-                      style="font-size: 11px; font-weight: 700; background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; color: var(--text-secondary); box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
-                      onclick="event.stopPropagation(); quickSelectMenu('Cà phê đá', 'Nhỏ')">S: 15k</span>
-                    <span
-                      style="font-size: 11px; font-weight: 700; background: var(--primary-green); border: 1px solid var(--primary-green); border-radius: 8px; padding: 5px 8px; color: var(--white); box-shadow: 0 1px 2px rgba(0,0,0,0.15);"
-                      onclick="event.stopPropagation(); quickSelectMenu('Cà phê đá', 'Lớn')">L: 17k</span>
-                  </div>
-                </div>
-                <!-- Item: Cà phê sữa -->
-                <div class="menu-item-row"
-                  style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 12px; transition: all 0.2s ease; cursor: pointer; background: linear-gradient(135deg, #fdfbf7, #f5f1e9); box-shadow: 0 2px 4px rgba(0,0,0,0.01);"
-                  onclick="quickSelectMenu('Cà phê sữa')">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <div
-                      style="font-size: 20px; background: #efebe4; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
-                      🥤</div>
-                    <div>
-                      <div style="font-weight: 700; font-size: 13.5px; color: var(--coffee-brown);">Cà phê sữa</div>
-                      <div style="font-size: 11px; color: var(--text-secondary); margin-top: 1px;">Sữa béo ngọt ngào,
-                        đậm đà</div>
-                    </div>
-                  </div>
-                  <div style="display: flex; gap: 8px;">
-                    <span
-                      style="font-size: 11px; font-weight: 700; background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; color: var(--text-secondary); box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
-                      onclick="event.stopPropagation(); quickSelectMenu('Cà phê sữa', 'Nhỏ')">S: 17k</span>
-                    <span
-                      style="font-size: 11px; font-weight: 700; background: var(--primary-green); border: 1px solid var(--primary-green); border-radius: 8px; padding: 5px 8px; color: var(--white); box-shadow: 0 1px 2px rgba(0,0,0,0.15);"
-                      onclick="event.stopPropagation(); quickSelectMenu('Cà phê sữa', 'Lớn')">L: 19k</span>
-                  </div>
-                </div>
-                <!-- Item: Bạc xỉu -->
-                <div class="menu-item-row"
-                  style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 12px; transition: all 0.2s ease; cursor: pointer; background: linear-gradient(135deg, #fdfbf7, #f5f1e9); box-shadow: 0 2px 4px rgba(0,0,0,0.01);"
-                  onclick="quickSelectMenu('Bạc xỉu')">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <div
-                      style="font-size: 20px; background: #efebe4; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
-                      🥛</div>
-                    <div>
-                      <div style="font-weight: 700; font-size: 13.5px; color: var(--coffee-brown);">Bạc xỉu</div>
-                      <div style="font-size: 11px; color: var(--text-secondary); margin-top: 1px;">Sữa tươi béo và hương
-                        cà phê</div>
-                    </div>
-                  </div>
-                  <div style="display: flex; gap: 8px;">
-                    <span
-                      style="font-size: 11px; font-weight: 700; background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; color: var(--text-secondary); box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
-                      onclick="event.stopPropagation(); quickSelectMenu('Bạc xỉu', 'Nhỏ')">S: 18k</span>
-                    <span
-                      style="font-size: 11px; font-weight: 700; background: var(--primary-green); border: 1px solid var(--primary-green); border-radius: 8px; padding: 5px 8px; color: var(--white); box-shadow: 0 1px 2px rgba(0,0,0,0.15);"
-                      onclick="event.stopPropagation(); quickSelectMenu('Bạc xỉu', 'Lớn')">L: 20k</span>
-                  </div>
-                </div>
+              <div class="menu-board-grid" id="menuBoard">
+                 <!-- Tải động từ JS -->
               </div>
               <div
                 style="font-size: 10px; color: var(--text-secondary); margin-top: 8px; font-style: italic; font-weight: 500;">
                 💡 Chạm nhanh vào tên món hoặc các nút size (S/L) để chọn nhanh.</div>
             </div>
 
-            <!-- Form đặt món chi tiết -->
-            <form id="preOrderForm" novalidate>
+              <!-- 4. Khu vực chọn món chi tiết -->
+              <div
+                style="background: #faf8f5; border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 20px;">
+                <div class="section-label"
+                  style="margin-bottom: 12px; font-size: 14px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" />
+                  </svg>
+                  Chi Tiết Chọn Món
+                </div>
+
+                <!-- Loại nước -->
+                <div class="form-group" style="margin-bottom: 14px;">
+                  <label class="section-label" style="font-size: 12px; margin-bottom: 6px;">Loại nước</label>
+                  <div id="preCoffeeTypeContainer" class="options-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px;">
+                    <!-- Tải động từ Google Sheets -->
+                  </div>
+                  <div class="error-text" id="errPreCoffeeType">Vui lòng chọn loại nước!</div>
+                </div>
+
+                <!-- Size -->
+                <div class="form-group" style="margin-bottom: 14px;">
+                  <label class="section-label" style="font-size: 12px; margin-bottom: 6px;">Size Ly</label>
+                  <div class="options-grid">
+                    <input type="radio" name="preSize" id="pre_size_lon" value="Lớn">
+                    <label for="pre_size_lon">Ly Lớn (L)</label>
+                    <input type="radio" name="preSize" id="pre_size_nho" value="Nhỏ">
+                    <label for="pre_size_nho">Ly Nhỏ (S)</label>
+                  </div>
+                  <div class="error-text" id="errPreSize">Vui lòng chọn size ly!</div>
+                </div>
+
+                <!-- Số lượng -->
+                <div class="form-group" style="margin-bottom: 14px;">
+                  <label class="section-label" style="font-size: 12px; margin-bottom: 6px;">Số lượng</label>
+                  <div class="options-grid five-cols">
+                    <input type="radio" name="preQuantity" id="pre_q1" value="1"><label for="pre_q1">1</label>
+                    <input type="radio" name="preQuantity" id="pre_q2" value="2"><label for="pre_q2">2</label>
+                    <input type="radio" name="preQuantity" id="pre_q3" value="3"><label for="pre_q3">3</label>
+                    <input type="radio" name="preQuantity" id="pre_q4" value="4"><label for="pre_q4">4</label>
+                    <input type="radio" name="preQuantity" id="pre_q5" value="5"><label for="pre_q5">5</label>
+                  </div>
+                </div>
+
+                <!-- Hiển thị Giá tiền -->
+                <div class="price-summary-box" id="prePriceDisplayBox">
+                  <span class="price-label">Giá:</span>
+                  <span class="price-value" id="preCurrentPriceText">Chờ chọn món & size...</span>
+                </div>
+
+                <!-- Nút Thêm vào đơn -->
+                <button type="button" class="btn-add-item" id="btnPreAddItem">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                  </svg>
+                  Thêm vào đơn
+                </button>
+              </div>
+            </div> <!-- Close pos-col-left -->
+
+            <!-- Cột phải: Thông tin nhận nước, Giỏ hàng, Hẹn giờ, Thanh toán, Ghi chú -->
+            <div class="pos-col-right" style="display: flex; flex-direction: column; gap: 16px;">
+
+
               <!-- 1. Cửa hàng nhận nước -->
               <div class="form-group">
                 <div class="section-label">
@@ -1460,67 +1661,6 @@
                   <option value="single" selected>Đơn lẻ (Gửi nhanh 1 món)</option>
                   <option value="multiple">Đơn nhiều (Thêm giỏ hàng)</option>
                 </select>
-              </div>
-
-              <!-- 4. Khu vực chọn món chi tiết -->
-              <div
-                style="background: #faf8f5; border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 20px;">
-                <div class="section-label"
-                  style="margin-bottom: 12px; font-size: 14px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
-                  <svg viewBox="0 0 24 24">
-                    <path
-                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" />
-                  </svg>
-                  Chi Tiết Chọn Món
-                </div>
-
-                <!-- Loại nước -->
-                <div class="form-group" style="margin-bottom: 14px;">
-                  <label class="section-label" style="font-size: 12px; margin-bottom: 6px;">Loại nước</label>
-                  <div id="preCoffeeTypeContainer" class="options-grid"
-                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px;">
-                    <!-- Tải động từ Google Sheets -->
-                  </div>
-                  <div class="error-text" id="errPreCoffeeType">Vui lòng chọn loại nước!</div>
-                </div>
-
-                <!-- Size -->
-                <div class="form-group" style="margin-bottom: 14px;">
-                  <label class="section-label" style="font-size: 12px; margin-bottom: 6px;">Size Ly</label>
-                  <div class="options-grid">
-                    <input type="radio" name="preSize" id="pre_size_lon" value="Lớn">
-                    <label for="pre_size_lon">Ly Lớn (L)</label>
-                    <input type="radio" name="preSize" id="pre_size_nho" value="Nhỏ">
-                    <label for="pre_size_nho">Ly Nhỏ (S)</label>
-                  </div>
-                  <div class="error-text" id="errPreSize">Vui lòng chọn size ly!</div>
-                </div>
-
-                <!-- Số lượng -->
-                <div class="form-group" style="margin-bottom: 14px;">
-                  <label class="section-label" style="font-size: 12px; margin-bottom: 6px;">Số lượng</label>
-                  <div class="options-grid five-cols">
-                    <input type="radio" name="preQuantity" id="pre_q1" value="1"><label for="pre_q1">1</label>
-                    <input type="radio" name="preQuantity" id="pre_q2" value="2"><label for="pre_q2">2</label>
-                    <input type="radio" name="preQuantity" id="pre_q3" value="3"><label for="pre_q3">3</label>
-                    <input type="radio" name="preQuantity" id="pre_q4" value="4"><label for="pre_q4">4</label>
-                    <input type="radio" name="preQuantity" id="pre_q5" value="5"><label for="pre_q5">5</label>
-                  </div>
-                </div>
-
-                <!-- Hiển thị Giá tiền -->
-                <div class="price-summary-box" id="prePriceDisplayBox">
-                  <span class="price-label">Giá:</span>
-                  <span class="price-value" id="preCurrentPriceText">Chờ chọn món & size...</span>
-                </div>
-
-                <!-- Nút Thêm vào đơn -->
-                <button type="button" class="btn-add-item" id="btnPreAddItem">
-                  <svg viewBox="0 0 24 24">
-                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-                  </svg>
-                  Thêm vào đơn
-                </button>
               </div>
 
               <!-- 5. Giỏ hàng cho đặt trước -->
@@ -1605,13 +1745,69 @@
                   </svg>
                   Hình thức thanh toán
                 </div>
-                <div class="options-grid">
+                <div class="options-grid" style="grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));">
                   <input type="radio" name="prePayment" id="pre_pay_ck" value="Chuyển khoản">
                   <label for="pre_pay_ck">Chuyển khoản</label>
                   <input type="radio" name="prePayment" id="pre_pay_tm" value="Tiền mặt">
                   <label for="pre_pay_tm">Tiền mặt</label>
+                  <input type="radio" name="prePayment" id="pre_pay_vi" value="Ví TodayCoffe">
+                  <label for="pre_pay_vi" id="lblPrePayViOption" style="display: none;">Ví TodayCoffe</label>
                 </div>
                 <div class="error-text" id="errPrePayment">Vui lòng chọn hình thức thanh toán!</div>
+              </div>
+
+              <!-- Pre VietQR Section -->
+              <div id="preVietQrSection" style="display: none; background: #faf8f5; border: 1.5px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                <div style="display: flex; gap: 40px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                  <!-- Cột bên trái: Chi tiết thông tin chuyển khoản -->
+                  <div style="min-width: 220px; display: flex; flex-direction: column; gap: 8px; text-align: left;">
+                    <div style="font-size: 12px; font-weight: 700; color: var(--coffee-brown); letter-spacing: 0.5px; border-bottom: 1px dashed var(--border); padding-bottom: 6px;">QUÉT MÃ QR ĐỂ THANH TOÁN</div>
+                    <div style="font-size: 11.5px; color: var(--text-main); line-height: 1.6; display: flex; flex-direction: column; gap: 4px;">
+                      <div>Ngân hàng: <strong id="lblPreQrBank" style="font-weight: 700;">MB</strong></div>
+                      <div>Số tài khoản: <strong id="lblPreQrAccountNo" style="font-weight: 700; font-size: 12px; letter-spacing: 0.5px;">0961104163</strong></div>
+                      <div>Chủ tài khoản: <strong id="lblPreQrAccountName" style="font-weight: 700;">TRAN NGOC HUNG QUAN</strong></div>
+                      <div>Nội dung CK: <strong id="lblPreQrNote" style="font-weight: 700; color: #b45309;">ORD-...</strong></div>
+                      <div style="margin-top: 4px; padding-top: 6px; border-top: 1px dashed var(--border); font-size: 12px;">Số tiền: <strong id="lblPreQrAmount" style="color: #1b4d3e; font-weight: 800; font-size: 14.5px;">0đ</strong></div>
+                    </div>
+                  </div>
+                  <!-- Cột bên phải: Hình ảnh QR Code phóng to tối đa -->
+                  <div style="display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
+                    <img id="imgPreVietQr" src="" style="width: 100%; max-width: 250px; aspect-ratio: 1; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid var(--border);" alt="VietQR">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ví Tích Lũy Đặt Trước -->
+              <div class="form-group" id="preWalletPaymentSection" style="display: none; background: #fdfbf7; border: 1.5px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 13px; font-weight: 700; color: var(--coffee-brown); display: flex; align-items: center; gap: 4px;">
+                    <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: var(--coffee-brown);"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    Sử dụng ví tích lũy
+                  </span>
+                  <span style="font-size: 12px; color: var(--text-secondary); font-weight: 600;" id="lblPreWalletPaymentAvailable">Số dư: 0đ</span>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;" id="chkPreUseWalletContainer">
+                  <input type="checkbox" id="chkPreUseWallet" style="width: 18px; height: 18px; cursor: pointer;">
+                  <label for="chkPreUseWallet" style="font-size: 12.5px; font-weight: 600; color: var(--text-main); cursor: pointer;">Dùng tối đa số dư ví</label>
+                </div>
+                <div id="preWalletDetailSummary" style="display: none; border-top: 1px dashed var(--border); margin-top: 10px; padding-top: 8px; font-size: 12px; display: flex; flex-direction: column; gap: 4px;">
+                  <div style="display: flex; justify-content: space-between;">
+                    <span>Tổng tiền món:</span>
+                    <span id="lblPreWalletTotalOriginal">0đ</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; color: #b45309; font-weight: 600;">
+                    <span>Trừ ví tích lũy:</span>
+                    <span id="lblPreWalletDeduction">-0đ</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; color: #475569; font-weight: 600; display: none;" id="divPreWalletRemainingRow">
+                    <span>Số dư ví còn lại sau mua:</span>
+                    <span id="lblPreWalletRemaining">0đ</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--primary-green);">
+                    <span>Cần thanh toán thêm:</span>
+                    <span id="lblPreWalletTotalPayable">0đ</span>
+                  </div>
+                </div>
               </div>
 
               <!-- 8. Ghi chú -->
@@ -1641,7 +1837,8 @@
                 <button type="button" class="btn-primary" id="btnSubmitEdit" style="background: #f59e0b; flex: 1;" disabled>Okey</button>
               </div>
             </form>
-          </div> <!-- Close #preOrderFormWrapper -->
+          </div> <!-- Close pos-col-right -->
+        </div> <!-- Close #preOrderFormWrapper -->
 
           <!-- Màn hình xác nhận đặt nước thành công -->
           <div id="preOrderSuccessScreen" style="display: none; background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px;">
@@ -1876,8 +2073,9 @@
               </div>
             </div>
 
-            <!-- Tiến độ hòa vốn -->
-            <div class="progress-container-be">
+            <!-- Tiến độ hòa vốn & Phân tích trạng thái đơn -->
+            <div class="analytics-flex-row">
+              <div class="progress-container-be" style="margin-bottom: 0;">
               <div
                 style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--coffee-brown);">
                 <span>TIẾN ĐỘ HÒA VỐN</span>
@@ -1913,8 +2111,9 @@
                 </div>
               </div>
             </div>
+          </div> <!-- Close analytics-flex-row -->
 
-            <!-- Bảng số liệu hàng ngày -->
+          <!-- Bảng số liệu hàng ngày -->
             <div class="section-label" style="margin-bottom: 10px; font-size: 13px;">Báo Cáo Theo Ngày</div>
             <div class="analytics-table-container">
               <table class="analytics-table">
@@ -1931,6 +2130,96 @@
                   <!-- Dữ liệu render qua JS -->
                 </tbody>
               </table>
+            </div>
+          </div>
+
+          <!-- ================= SECTION: QUẢN LÝ VÍ (ADMIN ONLY) ================= -->
+          <div id="manageWalletSection" style="display: none;">
+            <div style="background: #faf8f5; border: 1.5px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 20px;">
+              <div class="section-label" style="font-size: 14px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 12px; color: var(--coffee-brown);">
+                <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                Điều Chỉnh Ví Thành Viên (Chỉ Admin)
+              </div>
+              <form id="walletAdjustForm">
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label class="section-label" style="font-size: 12px; margin-bottom: 4px;">Chọn tài khoản</label>
+                  <select id="walletTargetUser" class="select-mode" style="height: 40px; font-size: 13px;" required>
+                    <option value="" disabled selected>-- Chọn tài khoản thành viên --</option>
+                  </select>
+                </div>
+                
+                <div id="walletUserBalanceDisplay" style="background: #fdfbf7; border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 12px; display: none; font-size: 13px; font-weight: 700; color: var(--coffee-brown);">
+                  Số dư hiện tại: <span id="lblWalletCurrentBalance" style="color: var(--primary-green);">0đ</span>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label class="section-label" style="font-size: 12px; margin-bottom: 4px;">Hành động</label>
+                  <div class="options-grid" style="grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <input type="radio" name="walletActionType" id="wallet_action_inc" value="increase" checked>
+                    <label for="wallet_action_inc" style="padding: 10px; border-radius: 8px; font-size: 13px; text-align: center; border: 1.5px solid var(--border); font-weight: 700;">Nạp tiền (+)</label>
+                    <input type="radio" name="walletActionType" id="wallet_action_dec" value="decrease">
+                    <label for="wallet_action_dec" style="padding: 10px; border-radius: 8px; font-size: 13px; text-align: center; border: 1.5px solid var(--border); font-weight: 700;">Trừ tiền (-)</label>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label class="section-label" style="font-size: 12px; margin-bottom: 4px;">Số tiền (VNĐ)</label>
+                  <input type="number" id="walletAdjustAmount" class="input-text" placeholder="Nhập số tiền..." min="1000" step="1000" required>
+                  <div id="walletAdjustAmountLabel" style="font-size: 13px; font-weight: 700; color: var(--primary-green); margin-top: 6px; display: none; line-height: 1.4;"></div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                  <label class="section-label" style="font-size: 12px; margin-bottom: 4px;">Lý do điều chỉnh</label>
+                  <input type="text" id="walletAdjustReason" class="input-text" placeholder="Nhập lý do nạp/rút tiền..." required>
+                </div>
+
+                <button type="submit" class="btn-primary" id="btnSubmitWalletAdjust">Xác nhận cập nhật</button>
+              </form>
+            </div>
+
+            <!-- Lịch sử giao dịch ví cho Admin theo dõi -->
+            <div id="adminWalletHistoryBox" style="background: #faf8f5; border: 1.5px solid var(--border); border-radius: 16px; padding: 16px; margin-top: 20px; display: none;">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 12px;">
+                <div class="section-label" style="font-size: 14px; font-weight: 700; color: var(--coffee-brown); margin-bottom: 0;">
+                  <svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.25 2.52.77-1.28-3.52-2.09V8z"/></svg>
+                  Lịch Sử Biến Động Ví
+                </div>
+                <button type="button" id="btnRefreshAdminWalletHistory" style="background: transparent; border: none; color: var(--primary-green); font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 6px; transition: var(--transition);">
+                  <svg id="svgRefreshIcon" viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: currentColor; transition: transform 0.2s;"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                  Làm mới
+                </button>
+              </div>
+              <div id="adminWalletHistoryContainer" style="display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto; padding-right: 4px;">
+                <div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Vui lòng chọn tài khoản để xem lịch sử.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= SECTION: TÀI KHOẢN (USER PROFILE & ORDER HISTORY) ================= -->
+          <div id="profileSection" style="display: none;">
+            <!-- Membership Card -->
+            <div style="background: linear-gradient(135deg, #1b4d3e, #0f2a22); color: white; border-radius: 20px; padding: 20px; box-shadow: 0 8px 24px rgba(27, 77, 62, 0.2); margin-bottom: 20px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+              <div style="position: absolute; right: -20px; bottom: -20px; opacity: 0.1; font-size: 150px; line-height: 1;">☕</div>
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                <div>
+                  <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #a3e635; margin-bottom: 4px;">TODAY COFFEE MEMBER</div>
+                  <div style="font-size: 20px; font-weight: 800; color: #ffffff;" id="profileUsername">Khách hàng</div>
+                </div>
+                <div style="font-size: 12px; background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 8px; font-weight: 700;" id="profileUserRole">-</div>
+              </div>
+              <div style="margin-top: 10px;">
+                <div style="font-size: 11px; color: rgba(255,255,255,0.7); margin-bottom: 2px;">VÍ TÍCH LŨY HIỆN CÓ</div>
+                <div style="font-size: 28px; font-weight: 800; color: #fef08a;" id="profileWalletBalance">0đ</div>
+              </div>
+            </div>
+
+            <!-- Order History List -->
+            <div class="section-label" style="margin-bottom: 12px; font-size: 14px; border-bottom: 1px solid var(--border); padding-bottom: 6px; color: var(--coffee-brown);">
+              <svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.25 2.52.77-1.28-3.52-2.09V8z"/></svg>
+              Lịch Sử Mua Hàng & Tích Lũy
+            </div>
+            <div id="profileOrderHistoryContainer" style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Đang tải lịch sử mua hàng...</div>
             </div>
           </div>
         </div>
@@ -1951,6 +2240,25 @@
   <script>
     // URL Apps Script backend
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzEwmpSDsgYiOshsr_JpY0jKSnYUeELPQ4HAhi8tWvSWY0oOY7837vh-tMJ6ORWXlUa/exec";
+
+    // Cấu hình ngân hàng thanh toán quét mã QR (VietQR)
+    const BANK_CONFIG = {
+      bankId: "MB", // Ngân hàng nhận (ví dụ: MB, VCB, TCB, ACB, ...)
+      accountNo: "0961104163", // Số tài khoản ngân hàng nhận
+      accountName: "TRAN NGOC HUNG QUAN", // Tên chủ tài khoản nhận (Không dấu)
+      template: "compact" // qr_only (chỉ mã QR), compact (kèm thông tin chi tiết)
+    };
+
+    let currentOrderId = "ORD-" + Date.now();
+    let currentPreOrderId = "ORD-" + Date.now();
+
+    function regenerateOrderId() {
+      currentOrderId = "ORD-" + Date.now();
+    }
+
+    function regeneratePreOrderId() {
+      currentPreOrderId = "ORD-" + Date.now();
+    }
 
     // Bảng giá chi tiết của Today Coffee (Tải động từ sheet)
     let PRICING_TABLE = {};
@@ -1987,6 +2295,40 @@
     const btnLoginSubmit = document.getElementById("btnLoginSubmit");
     const lblAccountName = document.getElementById("lblAccountName");
     const btnLogout = document.getElementById("btnLogout");
+    
+    const btnTabManageWallet = document.getElementById("btnTabManageWallet");
+    const btnTabProfile = document.getElementById("btnTabProfile");
+    const manageWalletSection = document.getElementById("manageWalletSection");
+    const profileSection = document.getElementById("profileSection");
+    
+    const walletPaymentSection = document.getElementById("walletPaymentSection");
+    const lblWalletPaymentAvailable = document.getElementById("lblWalletPaymentAvailable");
+    const chkUseWallet = document.getElementById("chkUseWallet");
+    const walletDetailSummary = document.getElementById("walletDetailSummary");
+    const lblWalletTotalOriginal = document.getElementById("lblWalletTotalOriginal");
+    const lblWalletDeduction = document.getElementById("lblWalletDeduction");
+    const lblWalletTotalPayable = document.getElementById("lblWalletTotalPayable");
+
+    const preWalletPaymentSection = document.getElementById("preWalletPaymentSection");
+    const lblPreWalletPaymentAvailable = document.getElementById("lblPreWalletPaymentAvailable");
+    const chkPreUseWallet = document.getElementById("chkPreUseWallet");
+    const preWalletDetailSummary = document.getElementById("preWalletDetailSummary");
+    const lblPreWalletTotalOriginal = document.getElementById("lblPreWalletTotalOriginal");
+    const lblPreWalletDeduction = document.getElementById("lblPreWalletDeduction");
+    const lblPreWalletTotalPayable = document.getElementById("lblPreWalletTotalPayable");
+
+    const walletAdjustForm = document.getElementById("walletAdjustForm");
+    const walletTargetUser = document.getElementById("walletTargetUser");
+    const walletUserBalanceDisplay = document.getElementById("walletUserBalanceDisplay");
+    const lblWalletCurrentBalance = document.getElementById("lblWalletCurrentBalance");
+    const walletAdjustAmount = document.getElementById("walletAdjustAmount");
+    const walletAdjustReason = document.getElementById("walletAdjustReason");
+    const btnSubmitWalletAdjust = document.getElementById("btnSubmitWalletAdjust");
+
+    const profileUsername = document.getElementById("profileUsername");
+    const profileUserRole = document.getElementById("profileUserRole");
+    const profileWalletBalance = document.getElementById("profileWalletBalance");
+    const profileOrderHistoryContainer = document.getElementById("profileOrderHistoryContainer");
 
     // Không cần dùng sellerSelect nữa vì thông tin người bán lấy trực tiếp từ session tài khoản đăng nhập
     const orderModeSelect = document.getElementById("orderMode");
@@ -2060,7 +2402,7 @@
       const savedWarehouse = localStorage.getItem("today_coffee_warehouse") || "TC01";
 
       if (isLoggedIn && savedUser) {
-        lblAccountName.innerText = `${savedUser} (${savedWarehouse})`;
+        updateAccountNameDisplay();
         ingressWarehouse.value = savedWarehouse;
         loadIngressItems();
 
@@ -2071,19 +2413,21 @@
         const hasIngress = lowerRole.indexOf("nhập kho") !== -1;
         const hasAnalytics = lowerRole.indexOf("thống kê") !== -1;
         const hasPreOrder = lowerRole.indexOf("đặt trước") !== -1;
+        const hasAdmin = lowerRole.indexOf("admin") !== -1;
         const hasManagePreOrders = lowerRole.indexOf("quản lý hẹn") !== -1 || hasSales || hasAnalytics || hasIngress;
 
-        // Đếm số lượng quyền được cấp để ẩn thanh tab nếu chỉ có 1 quyền
-        let roleCount = 0;
+        // Đếm số lượng quyền được cấp để ẩn thanh tab
+        let roleCount = 1; // Luôn có tab Tài Khoản
         if (hasSales) roleCount++;
         if (hasIngress) roleCount++;
         if (hasAnalytics) roleCount++;
         if (hasPreOrder) roleCount++;
         if (hasManagePreOrders) roleCount++;
+        if (hasAdmin) roleCount++;
 
         const tabNavContainer = document.querySelector(".tab-nav-btn-container");
         if (tabNavContainer) {
-          tabNavContainer.style.display = (roleCount <= 1) ? "none" : "flex";
+          tabNavContainer.style.display = "flex"; // Luôn hiển thị tab
         }
 
         // Hiển thị/Ẩn các nút Tab
@@ -2092,6 +2436,13 @@
         btnTabManagePreOrders.style.display = hasManagePreOrders ? "block" : "none";
         btnTabIngress.style.display = hasIngress ? "block" : "none";
         btnTabAnalytics.style.display = hasAnalytics ? "block" : "none";
+        btnTabManageWallet.style.display = hasAdmin ? "block" : "none";
+        btnTabProfile.style.display = "block";
+
+        const lblPayViOption = document.getElementById("lblPayViOption");
+        if (lblPayViOption) lblPayViOption.style.display = "block";
+        const lblPrePayViOption = document.getElementById("lblPrePayViOption");
+        if (lblPrePayViOption) lblPrePayViOption.style.display = "block";
 
         // Chọn Tab hiển thị mặc định
         if (hasPreOrder && !hasSales && !hasIngress && !hasAnalytics) {
@@ -2116,6 +2467,17 @@
       } else {
         loginPage.classList.add("active");
         orderPage.classList.remove("active");
+        
+        const lblPayViOption = document.getElementById("lblPayViOption");
+        if (lblPayViOption) lblPayViOption.style.display = "none";
+        const lblPrePayViOption = document.getElementById("lblPrePayViOption");
+        if (lblPrePayViOption) lblPrePayViOption.style.display = "none";
+        
+        const payVi = document.getElementById("pay_vi");
+        if (payVi) payVi.checked = false;
+        const prePayVi = document.getElementById("pre_pay_vi");
+        if (prePayVi) prePayVi.checked = false;
+        
         // Tải danh sách người bán và mã kho từ sheet để làm dropdown đăng nhập
         loadUsernames();
         loadWarehouses();
@@ -2211,8 +2573,8 @@
             loginUser.innerHTML = '<option value="" disabled selected>-- Chọn tên của bạn --</option>';
             res.users.forEach(user => {
               const opt = document.createElement("option");
-              opt.value = user;
-              opt.innerText = user;
+              opt.value = user.username;
+              opt.innerText = user.username;
               loginUser.appendChild(opt);
             });
           } else {
@@ -2288,6 +2650,25 @@
     }
 
     // ================= XỬ LÝ FORM ĐĂNG NHẬP =================
+    const loginInputsContainer = document.getElementById("loginInputsContainer");
+    const btnBackToSelection = document.getElementById("btnBackToSelection");
+
+    // Lắng nghe sự kiện click trực tiếp vào nút Đăng nhập để hiện khung nhập liệu trước
+    btnLoginSubmit.addEventListener("click", function (e) {
+      if (loginInputsContainer.style.display === "none") {
+        e.preventDefault();
+        e.stopPropagation();
+        loginInputsContainer.style.display = "block";
+        btnPreOrderCustomer.style.display = "none";
+        btnBackToSelection.style.display = "flex";
+        
+        btnLoginSubmit.innerHTML = `
+          <span style="font-size: 14.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Xác Nhận Đăng Nhập</span>
+          <span style="font-size: 11px; font-weight: 500; opacity: 0.9;">(Tích điểm đổi nước)</span>
+        `;
+      }
+    });
+
     loginForm.addEventListener("submit", function (e) {
       e.preventDefault();
 
@@ -2305,7 +2686,7 @@
       }
 
       // Hiển thị trạng thái đang xử lý
-      btnLoginSubmit.innerText = "Đang xác thực...";
+      btnLoginSubmit.innerHTML = `<span style="font-size: 14.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Đang xác thực...</span>`;
       btnLoginSubmit.disabled = true;
       loginError.style.display = "none";
 
@@ -2331,13 +2712,22 @@
             localStorage.setItem("today_coffee_username", res.username);
             localStorage.setItem("today_coffee_warehouse", warehouse);
             localStorage.setItem("today_coffee_role", res.role || "");
+            localStorage.setItem("today_coffee_balance", res.balance || 0);
 
             loginUser.value = "";
             loginWarehouse.value = "TC01";
             loginPass.value = "";
 
+            // Reset giao diện và ẩn khung nhập liệu
+            loginInputsContainer.style.display = "none";
+            btnPreOrderCustomer.style.display = "flex";
+            btnBackToSelection.style.display = "none";
+
             // Reset nút
-            btnLoginSubmit.innerText = "Đăng Nhập";
+            btnLoginSubmit.innerHTML = `
+              <span style="font-size: 14.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Đăng Nhập</span>
+              <span style="font-size: 11px; font-weight: 500; opacity: 0.9;">(Tích điểm đổi nước)</span>
+            `;
             btnLoginSubmit.disabled = false;
 
             checkLoginStatus();
@@ -2345,14 +2735,22 @@
             // Hiển thị thông báo lỗi
             loginError.innerText = res.message || "Sai mật khẩu!";
             loginError.style.display = "block";
-            btnLoginSubmit.innerText = "Đăng Nhập";
+            
+            btnLoginSubmit.innerHTML = `
+              <span style="font-size: 14.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Xác Nhận Đăng Nhập</span>
+              <span style="font-size: 11px; font-weight: 500; opacity: 0.9;">(Tích điểm đổi nước)</span>
+            `;
             btnLoginSubmit.disabled = false;
           }
         })
         .catch(err => {
           loginError.innerText = "Lỗi kết nối: " + err.message;
           loginError.style.display = "block";
-          btnLoginSubmit.innerText = "Đăng Nhập";
+          
+          btnLoginSubmit.innerHTML = `
+            <span style="font-size: 14.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Xác Nhận Đăng Nhập</span>
+            <span style="font-size: 11px; font-weight: 500; opacity: 0.9;">(Tích điểm đổi nước)</span>
+          `;
           btnLoginSubmit.disabled = false;
         });
     });
@@ -2361,7 +2759,7 @@
     btnPreOrderCustomer.addEventListener("click", () => {
       const warehouse = loginWarehouse.value || "TC01";
 
-      btnPreOrderCustomer.innerText = "Đang kết nối...";
+      btnPreOrderCustomer.innerHTML = `<span style="font-size: 14.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Đang kết nối...</span>`;
       btnPreOrderCustomer.disabled = true;
 
       fetch(WEB_APP_URL, {
@@ -2380,7 +2778,10 @@
           return response.json();
         })
         .then(res => {
-          btnPreOrderCustomer.innerText = "Đặt Trước Nước";
+          btnPreOrderCustomer.innerHTML = `
+            <span style="font-size: 14.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Đặt Nhanh</span>
+            <span style="font-size: 11px; font-weight: 500; opacity: 0.9;">(Không đăng nhập, không tích điểm)</span>
+          `;
           btnPreOrderCustomer.disabled = false;
 
           if (res.result === "success") {
@@ -2389,6 +2790,7 @@
             localStorage.setItem("today_coffee_username", res.username);
             localStorage.setItem("today_coffee_warehouse", warehouse);
             localStorage.setItem("today_coffee_role", res.role || "");
+            localStorage.setItem("today_coffee_balance", res.balance || 0);
 
             checkLoginStatus();
           } else {
@@ -2396,10 +2798,26 @@
           }
         })
         .catch(err => {
-          btnPreOrderCustomer.innerText = "Đặt Trước Nước";
+          btnPreOrderCustomer.innerHTML = `
+            <span style="font-size: 14.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Đặt Nhanh</span>
+            <span style="font-size: 11px; font-weight: 500; opacity: 0.9;">(Không đăng nhập, không tích điểm)</span>
+          `;
           btnPreOrderCustomer.disabled = false;
           alert("Lỗi kết nối: " + err.message);
         });
+    });
+
+    // Sự kiện nút Quay Lại khi đang nhập liệu đăng nhập
+    btnBackToSelection.addEventListener("click", () => {
+      loginInputsContainer.style.display = "none";
+      btnPreOrderCustomer.style.display = "flex";
+      btnBackToSelection.style.display = "none";
+      loginError.style.display = "none";
+
+      btnLoginSubmit.innerHTML = `
+        <span style="font-size: 14.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Đăng Nhập</span>
+        <span style="font-size: 11px; font-weight: 500; opacity: 0.9;">(Tích điểm đổi nước)</span>
+      `;
     });
 
     // ================= ĐĂNG XUẤT =================
@@ -2408,16 +2826,21 @@
       localStorage.removeItem("today_coffee_username");
       localStorage.removeItem("today_coffee_warehouse");
       localStorage.removeItem("today_coffee_role");
+      localStorage.removeItem("today_coffee_balance");
       lblAccountName.innerText = "...";
       // Trở lại tab Bán hàng mặc định
       btnTabSales.classList.add("active");
       btnTabPreOrder.classList.remove("active");
       btnTabIngress.classList.remove("active");
       btnTabAnalytics.classList.remove("active");
+      btnTabManageWallet.classList.remove("active");
+      btnTabProfile.classList.remove("active");
       salesSection.style.display = "block";
       preOrderSection.style.display = "none";
       ingressSection.style.display = "none";
       document.getElementById("analyticsSection").style.display = "none";
+      manageWalletSection.style.display = "none";
+      profileSection.style.display = "none";
       checkLoginStatus();
     });
 
@@ -2505,11 +2928,14 @@
           }
         }
       }
+      updateWalletPaymentUI();
+      updateVietQrDisplay();
     }
 
     function handleSelectionChange() {
       updateSizeAvailability('sales');
       calculateCurrentItemPrice();
+      updateWalletPaymentUI();
       if (orderModeSelect.value === "single") {
         updateSubmitButtonState();
       }
@@ -2527,8 +2953,22 @@
     });
 
     document.querySelectorAll('input[name="payment"]').forEach(input => {
-      input.addEventListener('change', () => {
+      input.addEventListener('change', (e) => {
         document.getElementById("errPayment").style.display = "none";
+        
+        if (e.target.value === "Ví TodayCoffe") {
+          const total = getSalesOrderTotal();
+          const balance = Number(localStorage.getItem("today_coffee_balance") || 0);
+          if (balance < total) {
+            alert(`Số dư ví TodayCoffe hiện tại (${balance.toLocaleString('vi-VN')}đ) không đủ để thanh toán hóa đơn này (${total.toLocaleString('vi-VN')}đ)!`);
+            e.target.checked = false;
+            updateWalletPaymentUI();
+            updateSubmitButtonState();
+            return;
+          }
+        }
+        
+        updateWalletPaymentUI();
         updateSubmitButtonState();
       });
     });
@@ -2678,6 +3118,7 @@
       cartCountText.innerText = `(${cart.length} món)`;
       cartTotalText.innerText = `${grandTotal.toLocaleString('vi-VN')}đ`;
 
+      updateWalletPaymentUI();
       updateSubmitButtonState();
     }
 
@@ -2724,13 +3165,27 @@
       const sellerName = localStorage.getItem("today_coffee_username") || "Ẩn danh";
       const warehouseName = localStorage.getItem("today_coffee_warehouse") || "TC01";
       const paymentEl = document.querySelector('input[name="payment"]:checked');
+      
+      let usedWalletVal = 0;
+      const paymentVal = paymentEl ? paymentEl.value : "";
+      if (paymentVal === "Ví TodayCoffe") {
+        usedWalletVal = getSalesOrderTotal();
+      } else if (chkUseWallet.checked && walletPaymentSection.style.display !== "none") {
+        const originalTotal = getSalesOrderTotal();
+        const availableBalance = Number(localStorage.getItem("today_coffee_balance") || 0);
+        usedWalletVal = Math.min(originalTotal, availableBalance);
+      }
+
       const formData = {
         seller: sellerName,
         warehouse: warehouseName,
         payment: paymentEl ? paymentEl.value : "",
         note: noteInput.value,
         orderMode: orderModeText,
-        items: itemsToSend
+        items: itemsToSend,
+        currentUser: localStorage.getItem("today_coffee_username") || "",
+        usedBalance: usedWalletVal,
+        orderId: currentOrderId
       };
 
       // Show loading overlay
@@ -2780,9 +3235,25 @@
               loadingOverlay.classList.remove("active");
 
               // Show Toast thông báo
+              const toastSpan = successToast.querySelector("span");
+              let toastText = "Đơn hàng đã được gửi thành công!";
+              if (res.earnedPoints > 0) {
+                toastText += ` (Tích lũy: +${res.earnedPoints.toLocaleString('vi-VN')}đ)`;
+              }
+              if (usedWalletVal > 0) {
+                toastText += ` (Trừ ví: -${usedWalletVal.toLocaleString('vi-VN')}đ)`;
+              }
+              toastSpan.innerText = toastText;
               successToast.classList.add("show");
 
+              // Cập nhật số dư ví tích lũy của user
+              if (res.newBalance !== undefined) {
+                localStorage.setItem("today_coffee_balance", res.newBalance);
+                updateAccountNameDisplay();
+              }
+
               // Reset dữ liệu giỏ hàng và form nhập
+              regenerateOrderId();
               cart = [];
               orderForm.reset();
 
@@ -3401,11 +3872,14 @@
           document.getElementById("submitButtonsContainer").style.display = "block";
           document.getElementById("editButtonsContainer").style.display = "none";
       }
+      updatePreWalletPaymentUI();
+      updatePreVietQrDisplay();
     }
 
     function handlePreSelectionChange() {
       updateSizeAvailability('pre');
       calculatePreItemPrice();
+      updatePreWalletPaymentUI();
       if (preOrderMode.value === "single") {
         updatePreSubmitButtonState();
       }
@@ -3437,8 +3911,22 @@
     });
 
     document.querySelectorAll('input[name="prePayment"]').forEach(input => {
-      input.addEventListener('change', () => {
+      input.addEventListener('change', (e) => {
         document.getElementById("errPrePayment").style.display = "none";
+        
+        if (e.target.value === "Ví TodayCoffe") {
+          const total = getPreOrderTotal();
+          const balance = Number(localStorage.getItem("today_coffee_balance") || 0);
+          if (balance < total) {
+            alert(`Số dư ví TodayCoffe hiện tại (${balance.toLocaleString('vi-VN')}đ) không đủ để thanh toán hóa đơn này (${total.toLocaleString('vi-VN')}đ)!`);
+            e.target.checked = false;
+            updatePreWalletPaymentUI();
+            updatePreSubmitButtonState();
+            return;
+          }
+        }
+        
+        updatePreWalletPaymentUI();
         updatePreSubmitButtonState();
       });
     });
@@ -3621,6 +4109,7 @@
       preCartCountText.innerText = `(${preCart.length} món)`;
       preCartTotalText.innerText = `${grandTotal.toLocaleString('vi-VN')}đ`;
 
+      updatePreWalletPaymentUI();
       updatePreSubmitButtonState();
     }
 
@@ -3786,6 +4275,16 @@
       const locString = deliveryLoc ? `[GIAO TỚI: ${deliveryLoc}]` : "";
       const combinedNote = `[HẸN LẤY: ${timeStr}] ${locString} ${userNote ? '- ' + userNote : ''}`.trim();
 
+      let usedPreWalletVal = 0;
+      const paymentVal = paymentEl ? paymentEl.value : "";
+      if (paymentVal === "Ví TodayCoffe") {
+        usedPreWalletVal = getPreOrderTotal();
+      } else if (chkPreUseWallet.checked && preWalletPaymentSection.style.display !== "none") {
+        const originalTotal = getPreOrderTotal();
+        const availableBalance = Number(localStorage.getItem("today_coffee_balance") || 0);
+        usedPreWalletVal = Math.min(originalTotal, availableBalance);
+      }
+
       const formData = {
         seller: sellerStr,
         warehouse: warehouseName,
@@ -3793,7 +4292,9 @@
         note: combinedNote,
         orderMode: "Đặt trước",
         items: itemsToSend,
-        currentUser: localStorage.getItem("today_coffee_username") || ""
+        currentUser: localStorage.getItem("today_coffee_username") || "",
+        usedBalance: usedPreWalletVal,
+        orderId: window.editingOrderId || currentPreOrderId
       };
 
       if (window.editingOrderId) {
@@ -3836,6 +4337,7 @@
         .then(res => {
           clearInterval(progressInterval);
           if (res.result === "success") {
+            regeneratePreOrderId();
             progress = 100;
             progressBar.style.width = "100%";
             progressText.innerText = "Đang gửi đơn đặt trước... 100%";
@@ -3845,8 +4347,17 @@
 
               const originalToastSpan = successToast.querySelector("span");
               const oldText = originalToastSpan.innerText;
-              originalToastSpan.innerText = "Đơn đặt trước đã được gửi thành công!";
+              let toastText = "Đơn đặt trước đã được gửi thành công!";
+              if (usedPreWalletVal > 0) {
+                toastText += ` (Trừ ví tạm giữ: -${usedPreWalletVal.toLocaleString('vi-VN')}đ)`;
+              }
+              originalToastSpan.innerText = toastText;
               successToast.classList.add("show");
+              
+              if (res.newBalance !== undefined) {
+                localStorage.setItem("today_coffee_balance", res.newBalance);
+                updateAccountNameDisplay();
+              }
 
               // Ẩn form đặt nước, hiện màn hình thành công
               document.getElementById("preOrderFormWrapper").style.display = "none";
@@ -4369,7 +4880,7 @@
     }
 
     function renderDynamicPricingUI() {
-      // 1. RENDER BẢNG GIÁ & MENU TRỰC QUAN (Hai cột như Hình 2)
+      // 1. RENDER BẢNG GIÁ & MENU TRỰC QUAN dạng Dòng kèm Size Badges
       const drinkMeta = {
         "Cà phê đá": { icon: "☕", desc: "Phin đậm vị, truyền thống" },
         "Cà phê sữa": { icon: "🥤", desc: "Sữa béo ngọt ngào, đậm đà" },
@@ -4381,107 +4892,68 @@
       
       const defaultMeta = { icon: "🥤", desc: "Thức uống thơm ngon, mát lạnh" };
 
-      // Thu thập các món theo Size Nhỏ và Size Lớn
-      const smallSizeItems = [];
-      const largeSizeItems = [];
+      const salesRowsHtml = [];
+      const preRowsHtml = [];
 
       Object.keys(PRICING_TABLE).forEach(drinkName => {
         const pricing = PRICING_TABLE[drinkName];
         const meta = drinkMeta[drinkName] || defaultMeta;
 
-        // Size Nhỏ (hoặc S)
-        if (pricing["Nhỏ"] !== undefined || pricing["S"] !== undefined) {
-          const price = pricing["Nhỏ"] !== undefined ? pricing["Nhỏ"] : pricing["S"];
-          smallSizeItems.push({ drinkName, size: pricing["Nhỏ"] !== undefined ? "Nhỏ" : "S", price, meta });
-        }
+        // Sắp xếp các size: Nhỏ/S trước, Lớn/L sau
+        const sizes = Object.keys(pricing).sort((a, b) => {
+          const score = { "Nhỏ": 1, "S": 1, "Lớn": 2, "L": 2 };
+          return (score[a] || 9) - (score[b] || 9);
+        });
 
-        // Size Lớn (hoặc L)
-        if (pricing["Lớn"] !== undefined || pricing["L"] !== undefined) {
-          const price = pricing["Lớn"] !== undefined ? pricing["Lớn"] : pricing["L"];
-          largeSizeItems.push({ drinkName, size: pricing["Lớn"] !== undefined ? "Lớn" : "L", price, meta });
-        }
-      });
+        // Tạo badges cho Bán Hàng
+        const salesBadges = sizes.map(size => {
+          const price = pricing[size];
+          const kPrice = price / 1000;
+          const displaySize = size === "Nhỏ" ? "S" : (size === "Lớn" ? "L" : size);
+          return `<span class="size-badge" onclick="event.stopPropagation(); quickSelectSalesMenu('${drinkName}', '${size}')">${displaySize}: ${kPrice}k</span>`;
+        }).join('');
 
-      // Build HTML cho cột Nhỏ (Bán Hàng)
-      const smallHtml = [];
-      smallSizeItems.forEach(item => {
-        const kPrice = item.price / 1000;
-        smallHtml.push(`
-          <div class="menu-item-row-compact" style="display: flex; align-items: center; cursor: pointer; padding: 6px 8px; transition: all 0.2s;" onclick="quickSelectSalesMenu('${item.drinkName}', '${item.size}')">
-            <span style="font-size: 16px; margin-right: 6px; flex-shrink: 0;">${item.meta.icon}</span>
-            <span style="font-weight: 600; font-size: 12.5px; color: var(--coffee-brown); flex-shrink: 0;">${item.drinkName}</span>
-            <div style="flex-grow: 1; border-bottom: 1.5px dotted #c4b5a2; margin: 0 8px; align-self: center;"></div>
-            <span style="font-size: 11px; font-weight: 700; background: #1b4d3e; color: var(--white); padding: 3px 8px; border-radius: 6px; min-width: 32px; text-align: center; flex-shrink: 0;">${kPrice}k</span>
-          </div>
-        `);
-      });
-
-      // Build HTML cho cột Lớn (Bán Hàng)
-      const largeHtml = [];
-      largeSizeItems.forEach(item => {
-        const kPrice = item.price / 1000;
-        largeHtml.push(`
-          <div class="menu-item-row-compact" style="display: flex; align-items: center; cursor: pointer; padding: 6px 8px; transition: all 0.2s;" onclick="quickSelectSalesMenu('${item.drinkName}', '${item.size}')">
-            <span style="font-size: 16px; margin-right: 6px; flex-shrink: 0;">${item.meta.icon}</span>
-            <span style="font-weight: 600; font-size: 12.5px; color: var(--coffee-brown); flex-shrink: 0;">${item.drinkName}</span>
-            <div style="flex-grow: 1; border-bottom: 1.5px dotted #c4b5a2; margin: 0 8px; align-self: center;"></div>
-            <span style="font-size: 11px; font-weight: 700; background: #1b4d3e; color: var(--white); padding: 3px 8px; border-radius: 6px; min-width: 32px; text-align: center; flex-shrink: 0;">${kPrice}k</span>
-          </div>
-        `);
-      });
-
-      // HTML cho cột Nhỏ (Đặt Trước)
-      const preSmallHtml = [];
-      smallSizeItems.forEach(item => {
-        const kPrice = item.price / 1000;
-        preSmallHtml.push(`
-          <div class="menu-item-row-compact" style="display: flex; align-items: center; cursor: pointer; padding: 6px 8px; transition: all 0.2s;" onclick="quickSelectMenu('${item.drinkName}', '${item.size}')">
-            <span style="font-size: 16px; margin-right: 6px; flex-shrink: 0;">${item.meta.icon}</span>
-            <span style="font-weight: 600; font-size: 12.5px; color: var(--coffee-brown); flex-shrink: 0;">${item.drinkName}</span>
-            <div style="flex-grow: 1; border-bottom: 1.5px dotted #c4b5a2; margin: 0 8px; align-self: center;"></div>
-            <span style="font-size: 11px; font-weight: 700; background: #1b4d3e; color: var(--white); padding: 3px 8px; border-radius: 6px; min-width: 32px; text-align: center; flex-shrink: 0;">${kPrice}k</span>
-          </div>
-        `);
-      });
-
-      // HTML cho cột Lớn (Đặt Trước)
-      const preLargeHtml = [];
-      largeSizeItems.forEach(item => {
-        const kPrice = item.price / 1000;
-        preLargeHtml.push(`
-          <div class="menu-item-row-compact" style="display: flex; align-items: center; cursor: pointer; padding: 6px 8px; transition: all 0.2s;" onclick="quickSelectMenu('${item.drinkName}', '${item.size}')">
-            <span style="font-size: 16px; margin-right: 6px; flex-shrink: 0;">${item.meta.icon}</span>
-            <span style="font-weight: 600; font-size: 12.5px; color: var(--coffee-brown); flex-shrink: 0;">${item.drinkName}</span>
-            <div style="flex-grow: 1; border-bottom: 1.5px dotted #c4b5a2; margin: 0 8px; align-self: center;"></div>
-            <span style="font-size: 11px; font-weight: 700; background: #1b4d3e; color: var(--white); padding: 3px 8px; border-radius: 6px; min-width: 32px; text-align: center; flex-shrink: 0;">${kPrice}k</span>
-          </div>
-        `);
-      });
-
-      // Tạo cấu trúc 2 cột chia đôi
-      const menuBoardTemplate = (leftCol, rightCol) => `
-        <div style="display: grid; grid-template-columns: 1fr 1px 1fr; gap: 16px; align-items: start; background: var(--white); padding: 4px 0;">
-          <!-- Cột bên trái: LY NHỎ -->
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div style="background: #1b4d3e; color: var(--white); text-align: center; font-weight: 700; padding: 6px; border-radius: 8px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;">LY NHỎ</div>
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-              ${leftCol}
+        salesRowsHtml.push(`
+          <div class="menu-item-row" onclick="quickSelectSalesMenu('${drinkName}')">
+            <div class="menu-item-left">
+              <div class="menu-item-icon">${meta.icon}</div>
+              <div class="menu-item-text">
+                <div class="menu-item-name">${drinkName}</div>
+                <div class="menu-item-desc">${meta.desc}</div>
+              </div>
+            </div>
+            <div class="menu-item-sizes">
+              ${salesBadges}
             </div>
           </div>
-          <!-- Đường vách ngăn dọc -->
-          <div style="background: var(--border); width: 1px; align-self: stretch;"></div>
-          <!-- Cột bên phải: LY LỚN -->
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div style="background: #1b4d3e; color: var(--white); text-align: center; font-weight: 700; padding: 6px; border-radius: 8px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;">LY LỚN</div>
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-              ${rightCol}
+        `);
+
+        // Tạo badges cho Đặt Trước
+        const preBadges = sizes.map(size => {
+          const price = pricing[size];
+          const kPrice = price / 1000;
+          const displaySize = size === "Nhỏ" ? "S" : (size === "Lớn" ? "L" : size);
+          return `<span class="size-badge" onclick="event.stopPropagation(); quickSelectMenu('${drinkName}', '${size}')">${displaySize}: ${kPrice}k</span>`;
+        }).join('');
+
+        preRowsHtml.push(`
+          <div class="menu-item-row" onclick="quickSelectMenu('${drinkName}')">
+            <div class="menu-item-left">
+              <div class="menu-item-icon">${meta.icon}</div>
+              <div class="menu-item-text">
+                <div class="menu-item-name">${drinkName}</div>
+                <div class="menu-item-desc">${meta.desc}</div>
+              </div>
+            </div>
+            <div class="menu-item-sizes">
+              ${preBadges}
             </div>
           </div>
-        </div>
-      `;
+        `);
+      });
 
-      salesMenuBoard.innerHTML = menuBoardTemplate(smallHtml.join(''), largeHtml.join(''));
-      menuBoard.innerHTML = menuBoardTemplate(preSmallHtml.join(''), preLargeHtml.join(''));
+      salesMenuBoard.innerHTML = salesRowsHtml.join('');
+      menuBoard.innerHTML = preRowsHtml.join('');
 
       // 2. RENDER CÁC NÚT CHỌN LOẠI NƯỚC (RADIO BUTTONS)
       const salesRadioHtml = [];
@@ -4522,6 +4994,719 @@
         });
       });
     }
+
+    // ----------------------------------------------------
+    // HỆ THỐNG VÍ TÍCH LŨY & TRANG CÁ NHÂN LOGIC
+    // ----------------------------------------------------
+    
+    // 1. Cập nhật tên tài khoản và số dư ví trên Header
+    function updateAccountNameDisplay() {
+      const savedUser = localStorage.getItem("today_coffee_username");
+      const savedWarehouse = localStorage.getItem("today_coffee_warehouse") || "TC01";
+      const savedBalance = Number(localStorage.getItem("today_coffee_balance") || 0);
+      if (savedUser) {
+        lblAccountName.innerText = `${savedUser} (${savedWarehouse}) - Ví tích lũy: ${savedBalance.toLocaleString('vi-VN')}đ`;
+        
+        const lblPayViOption = document.getElementById("lblPayViOption");
+        if (lblPayViOption) {
+          lblPayViOption.innerText = `Ví TodayCoffe (Số dư: ${savedBalance.toLocaleString('vi-VN')}đ)`;
+        }
+        const lblPrePayViOption = document.getElementById("lblPrePayViOption");
+        if (lblPrePayViOption) {
+          lblPrePayViOption.innerText = `Ví TodayCoffe (Số dư: ${savedBalance.toLocaleString('vi-VN')}đ)`;
+        }
+      }
+    }
+
+    // 2. Tính tổng tiền thực tế của giỏ hàng bán hàng
+    function getSalesOrderTotal() {
+      const mode = orderModeSelect.value;
+      if (mode === "single") {
+        const coffeeTypeEl = document.querySelector('input[name="coffeeType"]:checked');
+        const sizeEl = document.querySelector('input[name="size"]:checked');
+        const quantityEl = document.querySelector('input[name="quantity"]:checked');
+        if (!coffeeTypeEl || !sizeEl) return 0;
+        const type = coffeeTypeEl.value;
+        const size = sizeEl.value;
+        const quantity = quantityEl ? parseInt(quantityEl.value) : 1;
+        return PRICING_TABLE[type] ? (PRICING_TABLE[type][size] || 0) * quantity : 0;
+      } else {
+        let total = 0;
+        cart.forEach(item => { total += item.price * item.quantity; });
+        return total;
+      }
+    }
+
+    // 3. Tính tổng tiền thực tế của giỏ hàng đặt trước
+    function getPreOrderTotal() {
+      const mode = preOrderMode.value;
+      if (mode === "single") {
+        const coffeeTypeEl = document.querySelector('input[name="preCoffeeType"]:checked');
+        const sizeEl = document.querySelector('input[name="preSize"]:checked');
+        const quantityEl = document.querySelector('input[name="preQuantity"]:checked');
+        if (!coffeeTypeEl || !sizeEl) return 0;
+        const type = coffeeTypeEl.value;
+        const size = sizeEl.value;
+        const quantity = quantityEl ? parseInt(quantityEl.value) : 1;
+        return PRICING_TABLE[type] ? (PRICING_TABLE[type][size] || 0) * quantity : 0;
+      } else {
+        let total = 0;
+        preCart.forEach(item => { total += item.price * item.quantity; });
+        return total;
+      }
+    }
+
+    // 4. Cập nhật giao diện thanh toán ví tích lũy (Bán Hàng POS)
+    function updateWalletPaymentUI() {
+      const savedUser = localStorage.getItem("today_coffee_username") || "";
+      const savedRole = localStorage.getItem("today_coffee_role") || "";
+      const balance = Number(localStorage.getItem("today_coffee_balance") || 0);
+
+      const paymentEl = document.querySelector('input[name="payment"]:checked');
+      const isViPaymentSelected = paymentEl && paymentEl.value === "Ví TodayCoffe";
+
+      // Ẩn hoàn toàn khối "Sử dụng ví tích lũy" theo yêu cầu khách hàng
+      if (walletPaymentSection) {
+        walletPaymentSection.style.display = "none";
+      }
+
+      const total = getSalesOrderTotal();
+      if (total <= 0) {
+        return;
+      }
+
+      if (isViPaymentSelected) {
+        document.getElementById("chkUseWallet").checked = true;
+        btnSubmitOrder.innerText = `Gửi đơn hàng (Thanh toán bằng Ví: ${total.toLocaleString('vi-VN')}đ)`;
+      } else {
+        document.getElementById("chkUseWallet").checked = false;
+        btnSubmitOrder.innerText = `Gửi đơn hàng (Tổng: ${total.toLocaleString('vi-VN')}đ)`;
+      }
+    }
+
+    // 5. Cập nhật giao diện thanh toán ví tích lũy (Đặt Trước)
+    function updatePreWalletPaymentUI() {
+      const savedUser = localStorage.getItem("today_coffee_username") || "";
+      const savedRole = localStorage.getItem("today_coffee_role") || "";
+      const balance = Number(localStorage.getItem("today_coffee_balance") || 0);
+
+      const paymentEl = document.querySelector('input[name="prePayment"]:checked');
+      const isViPaymentSelected = paymentEl && paymentEl.value === "Ví TodayCoffe";
+
+      // Ẩn hoàn toàn khối "Sử dụng ví tích lũy" theo yêu cầu khách hàng
+      if (preWalletPaymentSection) {
+        preWalletPaymentSection.style.display = "none";
+      }
+
+      const total = getPreOrderTotal();
+      if (total <= 0) {
+        return;
+      }
+
+      if (isViPaymentSelected) {
+        document.getElementById("chkPreUseWallet").checked = true;
+        btnSubmitPreOrder.innerText = `Gửi đơn đặt trước (Thanh toán bằng Ví: ${total.toLocaleString('vi-VN')}đ)`;
+      } else {
+        document.getElementById("chkPreUseWallet").checked = false;
+        btnSubmitPreOrder.innerText = `Gửi đơn đặt trước (${total.toLocaleString('vi-VN')}đ)`;
+      }
+    }
+
+    // 5.5 Cập nhật mã VietQR động khi chọn Chuyển khoản (Bán Hàng POS)
+    function updateVietQrDisplay() {
+      const paymentEl = document.querySelector('input[name="payment"]:checked');
+      const isCkSelected = paymentEl && paymentEl.value === "Chuyển khoản";
+      const vietQrSection = document.getElementById("vietQrSection");
+      
+      if (!isCkSelected) {
+        if (vietQrSection) vietQrSection.style.display = "none";
+        return;
+      }
+      
+      const total = getSalesOrderTotal();
+      if (total <= 0) {
+        if (vietQrSection) vietQrSection.style.display = "none";
+        return;
+      }
+      
+      if (vietQrSection) {
+        vietQrSection.style.display = "block";
+        const imgVietQr = document.getElementById("imgVietQr");
+        
+        // Mặc định nội dung chuyển khoản là mã đơn hàng để quét tự động
+        const addInfo = encodeURIComponent(currentOrderId);
+        
+        imgVietQr.src = `https://img.vietqr.io/image/${BANK_CONFIG.bankId}-${BANK_CONFIG.accountNo}-${BANK_CONFIG.template}.png?amount=${total}&addInfo=${addInfo}&accountName=${encodeURIComponent(BANK_CONFIG.accountName)}`;
+        
+        document.getElementById("lblQrBank").innerText = BANK_CONFIG.bankId;
+        document.getElementById("lblQrAccountNo").innerText = BANK_CONFIG.accountNo;
+        document.getElementById("lblQrAccountName").innerText = BANK_CONFIG.accountName;
+        
+        const lblQrNote = document.getElementById("lblQrNote");
+        if (lblQrNote) lblQrNote.innerText = currentOrderId;
+        
+        document.getElementById("lblQrAmount").innerText = `${total.toLocaleString('vi-VN')}đ`;
+      }
+    }
+
+    // 5.6 Cập nhật mã VietQR động khi chọn Chuyển khoản (Đặt Trước)
+    function updatePreVietQrDisplay() {
+      const paymentEl = document.querySelector('input[name="prePayment"]:checked');
+      const isCkSelected = paymentEl && paymentEl.value === "Chuyển khoản";
+      const preVietQrSection = document.getElementById("preVietQrSection");
+      
+      if (!isCkSelected) {
+        if (preVietQrSection) preVietQrSection.style.display = "none";
+        return;
+      }
+      
+      const total = getPreOrderTotal();
+      if (total <= 0) {
+        if (preVietQrSection) preVietQrSection.style.display = "none";
+        return;
+      }
+      
+      if (preVietQrSection) {
+        preVietQrSection.style.display = "block";
+        const imgPreVietQr = document.getElementById("imgPreVietQr");
+        
+        const qrOrderId = window.editingOrderId || currentPreOrderId;
+        const addInfo = encodeURIComponent(qrOrderId);
+        
+        imgPreVietQr.src = `https://img.vietqr.io/image/${BANK_CONFIG.bankId}-${BANK_CONFIG.accountNo}-${BANK_CONFIG.template}.png?amount=${total}&addInfo=${addInfo}&accountName=${encodeURIComponent(BANK_CONFIG.accountName)}`;
+        
+        document.getElementById("lblPreQrBank").innerText = BANK_CONFIG.bankId;
+        document.getElementById("lblPreQrAccountNo").innerText = BANK_CONFIG.accountNo;
+        document.getElementById("lblPreQrAccountName").innerText = BANK_CONFIG.accountName;
+        
+        const lblPreQrNote = document.getElementById("lblPreQrNote");
+        if (lblPreQrNote) lblPreQrNote.innerText = qrOrderId;
+        
+        document.getElementById("lblPreQrAmount").innerText = `${total.toLocaleString('vi-VN')}đ`;
+      }
+    }
+
+    // Gắn sự kiện thay đổi checkbox ví
+    chkUseWallet.addEventListener("change", () => {
+      updateWalletPaymentUI();
+      updateSubmitButtonState();
+    });
+
+    chkPreUseWallet.addEventListener("change", () => {
+      updatePreWalletPaymentUI();
+      updatePreSubmitButtonState();
+    });
+
+    // 6. Tải Lịch sử mua hàng & Thông tin Trang cá nhân
+    function loadUserProfile() {
+      const savedUser = localStorage.getItem("today_coffee_username") || "";
+      const savedRole = localStorage.getItem("today_coffee_role") || "Thành viên";
+      const balance = Number(localStorage.getItem("today_coffee_balance") || 0);
+
+      profileUsername.innerText = savedUser;
+      profileUserRole.innerText = savedRole;
+      profileWalletBalance.innerText = `${balance.toLocaleString('vi-VN')}đ`;
+      
+      // Reset sub-tab state to Orders
+      const btnSubTabOrders = document.getElementById("btnSubTabOrders");
+      const btnSubTabWallet = document.getElementById("btnSubTabWallet");
+      const profileOrderHistoryContainer = document.getElementById("profileOrderHistoryContainer");
+      const profileWalletHistoryContainer = document.getElementById("profileWalletHistoryContainer");
+      if (btnSubTabOrders && btnSubTabWallet) {
+        btnSubTabOrders.style.background = "var(--white)";
+        btnSubTabOrders.style.color = "var(--coffee-brown)";
+        btnSubTabOrders.style.boxShadow = "0 2px 4px rgba(0,0,0,0.05)";
+        
+        btnSubTabWallet.style.background = "transparent";
+        btnSubTabWallet.style.color = "var(--text-secondary)";
+        btnSubTabWallet.style.boxShadow = "none";
+        
+        profileOrderHistoryContainer.style.display = "flex";
+        profileWalletHistoryContainer.style.display = "none";
+      }
+
+      profileOrderHistoryContainer.innerHTML = '<div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Đang tải lịch sử mua hàng...</div>';
+
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({ action: "getUserOrderHistory", username: savedUser })
+      })
+        .then(response => response.json())
+        .then(res => {
+          if (res.result === "success" && res.orders) {
+            profileOrderHistoryContainer.innerHTML = "";
+            if (res.orders.length === 0) {
+              profileOrderHistoryContainer.innerHTML = '<div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Bạn chưa có giao dịch nào trong lịch sử.</div>';
+              return;
+            }
+            res.orders.forEach(order => {
+              const dateObj = new Date(order.time);
+              const dateStr = isNaN(dateObj.getTime()) ? "-" : `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')} ${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
+              
+              let itemsText = order.items.map(it => `• ${it.name} (${it.size}) x ${it.quantity}`).join("<br>");
+              
+              let statusColor = "#166534";
+              let statusText = "Thành công";
+              let pointsText = `<span style="font-weight: 700; color: #166534;">Tích lũy: +${order.earnedBalance.toLocaleString('vi-VN')}đ</span>`;
+              
+              if (order.status === "Chờ nhận nước") {
+                statusColor = "#d97706";
+                statusText = "Chờ nhận nước";
+                pointsText = `<span style="font-weight: 600; color: #d97706;">⏳ Chờ tích lũy (Khi đơn thành công)</span>`;
+              } else if (order.status === "Đã huỷ") {
+                statusColor = "#b91c1c";
+                statusText = "Đã huỷ";
+                pointsText = `<span style="font-weight: 600; color: #b91c1c;">❌ Không được tích lũy (Đơn đã hủy)</span>`;
+              } else if (order.status === "Đã chuẩn bị") {
+                statusColor = "#1d4ed8";
+                statusText = "Đã chuẩn bị";
+                pointsText = `<span style="font-weight: 600; color: #1d4ed8;">⏳ Chờ nhận nước để tích điểm</span>`;
+              }
+              
+              let paymentDetail = order.payment;
+              if (order.usedBalance > 0) {
+                paymentDetail += ` (Đã trừ ví: -${order.usedBalance.toLocaleString('vi-VN')}đ)`;
+              }
+
+              const itemEl = document.createElement("div");
+              itemEl.style.cssText = "background: #faf8f5; border: 1.5px solid var(--border); border-radius: 14px; padding: 12px; font-size: 12.5px; line-height: 1.4;";
+              itemEl.innerHTML = `
+                <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--coffee-brown); margin-bottom: 6px;">
+                  <span>Mã đơn: ${order.orderId}</span>
+                  <span style="font-size: 11.5px; color: ${statusColor};">[${statusText}]</span>
+                </div>
+                <div style="font-size: 11.5px; color: var(--text-secondary); margin-bottom: 6px;">Thời gian: ${dateStr}</div>
+                <div style="color: var(--text-main); margin-bottom: 8px;">${itemsText}</div>
+                <div style="border-top: 1px dashed var(--border); padding-top: 8px; display: flex; flex-direction: column; gap: 4px;">
+                  <div style="display: flex; justify-content: space-between;">
+                    <span>Thanh toán (${paymentDetail}):</span>
+                    <strong>${order.totalAmount.toLocaleString('vi-VN')}đ</strong>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2px;">
+                    <span>Trạng thái ví:</span>
+                    <span>${pointsText}</span>
+                  </div>
+                </div>
+              `;
+              profileOrderHistoryContainer.appendChild(itemEl);
+            });
+          } else {
+            profileOrderHistoryContainer.innerHTML = '<div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Lỗi tải lịch sử giao dịch từ server.</div>';
+          }
+        })
+        .catch(err => {
+          console.error("Lỗi:", err);
+          profileOrderHistoryContainer.innerHTML = '<div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Không kết nối được server tải lịch sử.</div>';
+        });
+    }
+
+    function loadUserWalletHistory() {
+      const savedUser = localStorage.getItem("today_coffee_username") || "";
+      const container = document.getElementById("profileWalletHistoryContainer");
+      if (!savedUser) return;
+      
+      container.innerHTML = '<div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Đang tải lịch sử ví...</div>';
+      
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({
+          action: "getUserWalletHistory",
+          username: savedUser
+        })
+      })
+        .then(response => response.json())
+        .then(res => {
+          if (res.result === "success") {
+            container.innerHTML = "";
+            if (res.history && res.history.length > 0) {
+              res.history.forEach(item => {
+                const dateVal = new Date(item.time);
+                const dateStr = isNaN(dateVal.getTime()) ? item.time : `${String(dateVal.getDate()).padStart(2, '0')}/${String(dateVal.getMonth() + 1).padStart(2, '0')} ${String(dateVal.getHours()).padStart(2, '0')}:${String(dateVal.getMinutes()).padStart(2, '0')}`;
+                
+                const isInc = item.type.includes("cộng") || item.type.includes("Nạp") || item.amount > 0;
+                const amtColor = isInc ? "var(--primary-green)" : "var(--danger)";
+                const amtSign = isInc ? "+" : "";
+                
+                const card = document.createElement("div");
+                card.style.cssText = "background: #faf8f5; border: 1.5px solid var(--border); border-radius: 14px; padding: 12px; font-size: 12.5px; line-height: 1.4; display: flex; flex-direction: column; gap: 4px;";
+                card.innerHTML = `
+                  <div style="display: flex; justify-content: space-between; font-weight: 700;">
+                    <span style="color: var(--coffee-brown);">${item.type}</span>
+                    <span style="color: ${amtColor}; font-weight: 800;">${amtSign}${item.amount.toLocaleString('vi-VN')}đ</span>
+                  </div>
+                  <div style="font-size: 11.5px; color: var(--text-secondary);">Thời gian: ${dateStr}</div>
+                  <div style="display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-main); border-top: 1px dashed var(--border); padding-top: 6px; margin-top: 2px;">
+                    <span>Thực hiện: <strong>${item.actor}</strong></span>
+                    <span>Số dư sau GD: <strong>${item.newBalance.toLocaleString('vi-VN')}đ</strong></span>
+                  </div>
+                  ${item.note ? `<div style="font-size: 11.5px; color: var(--text-secondary); font-style: italic; background: #ffffff; border: 1px solid var(--border); padding: 6px; border-radius: 8px; margin-top: 2px;">Ghi chú: ${item.note}</div>` : ""}
+                `;
+                container.appendChild(card);
+              });
+            } else {
+              container.innerHTML = '<div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Tài khoản của bạn chưa có biến động ví nào.</div>';
+            }
+          } else {
+            container.innerHTML = `<div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Lỗi: ${res.message}</div>`;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          container.innerHTML = '<div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Lỗi kết nối tải lịch sử ví.</div>';
+        });
+    }
+
+    // Lắng nghe nhập số tiền để hiển thị chữ VNĐ
+    const walletAdjustAmountLabel = document.getElementById("walletAdjustAmountLabel");
+    if (walletAdjustAmount && walletAdjustAmountLabel) {
+      walletAdjustAmount.addEventListener("input", () => {
+        const val = parseInt(walletAdjustAmount.value);
+        if (isNaN(val) || val <= 0) {
+          walletAdjustAmountLabel.style.display = "none";
+          walletAdjustAmountLabel.innerText = "";
+        } else {
+          walletAdjustAmountLabel.style.display = "block";
+          const textDoc = docSoTienVietNam(val);
+          walletAdjustAmountLabel.innerHTML = `💵 <strong>Đang nhập:</strong> ${val.toLocaleString('vi-VN')}đ <span style="font-size: 11px; font-weight: 500; color: var(--text-secondary); font-style: italic;">(${textDoc})</span>`;
+        }
+      });
+    }
+
+    // Sự kiện nút làm mới lịch sử ví của admin
+    const btnRefreshAdminWalletHistory = document.getElementById("btnRefreshAdminWalletHistory");
+    if (btnRefreshAdminWalletHistory) {
+      btnRefreshAdminWalletHistory.addEventListener("click", () => {
+        const selectedUsername = walletTargetUser.value;
+        if (selectedUsername) {
+          loadTargetUserWalletHistory(selectedUsername);
+        } else {
+          alert("Vui lòng chọn tài khoản thành viên cần làm mới!");
+        }
+      });
+    }
+
+    // Đăng ký sự kiện chuyển sub-tab lịch sử
+    document.addEventListener("DOMContentLoaded", () => {
+      const btnSubTabOrders = document.getElementById("btnSubTabOrders");
+      const btnSubTabWallet = document.getElementById("btnSubTabWallet");
+      const profileOrderHistoryContainer = document.getElementById("profileOrderHistoryContainer");
+      const profileWalletHistoryContainer = document.getElementById("profileWalletHistoryContainer");
+
+      if (btnSubTabOrders && btnSubTabWallet) {
+        btnSubTabOrders.addEventListener("click", () => {
+          btnSubTabOrders.style.background = "var(--white)";
+          btnSubTabOrders.style.color = "var(--coffee-brown)";
+          btnSubTabOrders.style.boxShadow = "0 2px 4px rgba(0,0,0,0.05)";
+          
+          btnSubTabWallet.style.background = "transparent";
+          btnSubTabWallet.style.color = "var(--text-secondary)";
+          btnSubTabWallet.style.boxShadow = "none";
+          
+          profileOrderHistoryContainer.style.display = "flex";
+          profileWalletHistoryContainer.style.display = "none";
+        });
+
+        btnSubTabWallet.addEventListener("click", () => {
+          btnSubTabWallet.style.background = "var(--white)";
+          btnSubTabWallet.style.color = "var(--coffee-brown)";
+          btnSubTabWallet.style.boxShadow = "0 2px 4px rgba(0,0,0,0.05)";
+          
+          btnSubTabOrders.style.background = "transparent";
+          btnSubTabOrders.style.color = "var(--text-secondary)";
+          btnSubTabOrders.style.boxShadow = "none";
+          
+          profileOrderHistoryContainer.style.display = "none";
+          profileWalletHistoryContainer.style.display = "flex";
+          
+          loadUserWalletHistory();
+        });
+      }
+    });
+
+    // 7. Lập trình Tab Quản lý Ví dành cho Admin
+    function loadAdminWalletUsers() {
+      walletTargetUser.innerHTML = '<option value="" disabled selected>Đang tải danh sách tài khoản...</option>';
+      walletUserBalanceDisplay.style.display = "none";
+      const adminWalletHistoryBox = document.getElementById("adminWalletHistoryBox");
+      if (adminWalletHistoryBox) adminWalletHistoryBox.style.display = "none";
+      
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({ action: "getUsers" })
+      })
+        .then(response => response.json())
+        .then(res => {
+          if (res.result === "success" && res.users) {
+            window.adminCachedUsers = res.users;
+            walletTargetUser.innerHTML = '<option value="" disabled selected>-- Chọn tài khoản thành viên --</option>';
+            res.users.forEach(user => {
+              const opt = document.createElement("option");
+              opt.value = user.username;
+              opt.innerText = `${user.username} (str: ${user.role || 'Không vai trò'})`;
+              // Sửa định dạng chữ dropdown
+              opt.innerText = `${user.username} (${user.role || 'Thành viên'})`;
+              walletTargetUser.appendChild(opt);
+            });
+          } else {
+            walletTargetUser.innerHTML = '<option value="" disabled>Lỗi tải danh sách tài khoản</option>';
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          walletTargetUser.innerHTML = '<option value="" disabled>Lỗi kết nối server</option>';
+        });
+    }
+
+    // Hàm đọc số thành chữ tiếng Việt chuyên nghiệp
+    function docSoTienVietNam(so) {
+      if (isNaN(so) || so <= 0) return "";
+      const mangSo = ["không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
+      function doc3ChuSo(baso) {
+        let tram = Math.floor(baso / 100);
+        let chuc = Math.floor((baso % 100) / 10);
+        let donvi = baso % 10;
+        let ketqua = "";
+        if (tram === 0 && chuc === 0 && donvi === 0) return "";
+        if (tram !== 0) {
+          ketqua += mangSo[tram] + " trăm ";
+          if ((chuc === 0) && (donvi !== 0)) ketqua += "lẻ ";
+        }
+        if ((chuc !== 0) && (chuc !== 1)) {
+          ketqua += mangSo[chuc] + " mươi ";
+          if ((chuc !== 0) && (donvi === 1)) ketqua += "mốt ";
+        }
+        if (chuc === 1) {
+          ketqua += "mười ";
+          if (donvi === 1) ketqua += "một ";
+        }
+        if (donvi === 5) {
+          if (chuc === 0) ketqua += "năm ";
+          else ketqua += "lăm ";
+        } else if (donvi !== 1 && donvi !== 0) {
+          ketqua += mangSo[donvi] + " ";
+        } else if (donvi === 1 && chuc === 0) {
+          ketqua += "một ";
+        }
+        return ketqua;
+      }
+      let viTri = [0, 0, 0, 0, 0, 0];
+      let lan = 0;
+      let soTien = so;
+      let ketqua = "";
+      if (soTien < 0) return "";
+      if (soTien === 0) return "Không đồng";
+      while (soTien > 0) {
+        viTri[lan] = soTien % 1000;
+        soTien = Math.floor(soTien / 1000);
+        lan++;
+      }
+      for (let i = lan - 1; i >= 0; i--) {
+        let chuso = doc3ChuSo(viTri[i]);
+        ketqua += chuso;
+        if (viTri[i] > 0) {
+          if (i === 4) ketqua += "tỷ ";
+          if (i === 3) ketqua += "triệu ";
+          if (i === 2) ketqua += "nghìn ";
+          if (i === 1) ketqua += "đồng ";
+        }
+      }
+      ketqua = ketqua.trim();
+      if (ketqua.endsWith("đồng") === false) {
+        ketqua += " đồng";
+      }
+      return ketqua.charAt(0).toUpperCase() + ketqua.slice(1);
+    }
+
+    function loadTargetUserWalletHistory(username) {
+      const adminWalletHistoryBox = document.getElementById("adminWalletHistoryBox");
+      const adminWalletHistoryContainer = document.getElementById("adminWalletHistoryContainer");
+      const svgRefreshIcon = document.getElementById("svgRefreshIcon");
+      if (svgRefreshIcon) svgRefreshIcon.classList.add("spinning-icon");
+      
+      if (!username) {
+        adminWalletHistoryBox.style.display = "none";
+        return;
+      }
+      
+      adminWalletHistoryBox.style.display = "block";
+      adminWalletHistoryContainer.innerHTML = '<div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Đang tải lịch sử giao dịch ví...</div>';
+      
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({
+          action: "getUserWalletHistory",
+          username: username
+        })
+      })
+        .then(response => response.json())
+        .then(res => {
+          if (res.result === "success") {
+            adminWalletHistoryContainer.innerHTML = "";
+            if (res.history && res.history.length > 0) {
+              res.history.forEach(item => {
+                const dateVal = new Date(item.time);
+                const dateStr = isNaN(dateVal.getTime()) ? item.time : dateVal.toLocaleString('vi-VN');
+                
+                const isInc = item.type.includes("cộng") || item.type.includes("Nạp") || item.amount > 0;
+                const amtColor = isInc ? "var(--primary-green)" : "var(--danger)";
+                const amtSign = isInc ? "+" : "";
+                
+                const card = document.createElement("div");
+                card.style.cssText = "background: #fdfbf7; border: 1.5px solid var(--border); border-radius: 12px; padding: 12px; font-size: 12px; line-height: 1.4; display: flex; flex-direction: column; gap: 4px;";
+                card.innerHTML = `
+                  <div style="display: flex; justify-content: space-between; font-weight: 700;">
+                    <span style="color: var(--coffee-brown);">${item.type}</span>
+                    <span style="color: ${amtColor}; font-weight: 800;">${amtSign}${item.amount.toLocaleString('vi-VN')}đ</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--text-secondary);">Thời gian: ${dateStr}</div>
+                  <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-main); border-top: 1px dashed var(--border); padding-top: 4px; margin-top: 2px;">
+                    <span>Thực hiện: <strong>${item.actor}</strong></span>
+                    <span>Số dư sau GD: <strong>${item.newBalance.toLocaleString('vi-VN')}đ</strong></span>
+                  </div>
+                  ${item.note ? `<div style="font-size: 11px; color: var(--text-secondary); font-style: italic; background: #faf8f5; padding: 6px; border-radius: 6px; margin-top: 2px;">Ghi chú: ${item.note}</div>` : ""}
+                `;
+                adminWalletHistoryContainer.appendChild(card);
+              });
+            } else {
+              adminWalletHistoryContainer.innerHTML = '<div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Tài khoản này chưa có giao dịch ví nào.</div>';
+            }
+          } else {
+            adminWalletHistoryContainer.innerHTML = `<div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Lỗi: ${res.message}</div>`;
+          }
+          if (svgRefreshIcon) svgRefreshIcon.classList.remove("spinning-icon");
+        })
+        .catch(err => {
+          console.error(err);
+          adminWalletHistoryContainer.innerHTML = '<div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 20px;">Lỗi kết nối tải lịch sử ví.</div>';
+          if (svgRefreshIcon) svgRefreshIcon.classList.remove("spinning-icon");
+        });
+    }
+
+    walletTargetUser.addEventListener("change", () => {
+      const selectedUsername = walletTargetUser.value;
+      if (!selectedUsername || !window.adminCachedUsers) return;
+      const userObj = window.adminCachedUsers.find(u => u.username === selectedUsername);
+      if (userObj) {
+        walletUserBalanceDisplay.style.display = "block";
+        lblWalletCurrentBalance.innerText = `${userObj.balance.toLocaleString('vi-VN')}đ`;
+        loadTargetUserWalletHistory(selectedUsername);
+      }
+    });
+
+    walletAdjustForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const requester = localStorage.getItem("today_coffee_username") || "";
+      const targetUser = walletTargetUser.value;
+      const amount = parseInt(walletAdjustAmount.value);
+      const adjustType = document.querySelector('input[name="walletActionType"]:checked').value;
+      const note = walletAdjustReason.value.trim();
+
+      if (!targetUser) {
+        alert("Vui lòng chọn tài khoản đích!");
+        return;
+      }
+
+      btnSubmitWalletAdjust.innerText = "Đang cập nhật...";
+      btnSubmitWalletAdjust.disabled = true;
+
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({
+          action: "adjustUserBalance",
+          requester: requester,
+          targetUser: targetUser,
+          amount: amount,
+          adjustType: adjustType,
+          note: note
+        })
+      })
+        .then(response => response.json())
+        .then(res => {
+          btnSubmitWalletAdjust.innerText = "Xác nhận cập nhật";
+          btnSubmitWalletAdjust.disabled = false;
+          if (res.result === "success") {
+            alert(`Cập nhật ví thành công! Số dư mới của ${targetUser} là: ${res.newBalance.toLocaleString('vi-VN')}đ`);
+            if (window.adminCachedUsers) {
+              const u = window.adminCachedUsers.find(x => x.username === targetUser);
+              if (u) u.balance = res.newBalance;
+            }
+            lblWalletCurrentBalance.innerText = `${res.newBalance.toLocaleString('vi-VN')}đ`;
+            walletAdjustAmount.value = "";
+            if (walletAdjustAmountLabel) {
+              walletAdjustAmountLabel.style.display = "none";
+              walletAdjustAmountLabel.innerText = "";
+            }
+            walletAdjustReason.value = "";
+            
+            // Tải lại lịch sử ngay sau khi cập nhật thành công
+            loadTargetUserWalletHistory(targetUser);
+
+            if (targetUser.toLowerCase() === requester.toLowerCase()) {
+              localStorage.setItem("today_coffee_balance", res.newBalance);
+              updateAccountNameDisplay();
+            }
+          } else {
+            alert("Lỗi: " + res.message);
+          }
+        })
+        .catch(err => {
+          btnSubmitWalletAdjust.innerText = "Xác nhận cập nhật";
+          btnSubmitWalletAdjust.disabled = false;
+          alert("Lỗi kết nối cập nhật ví: " + err.message);
+        });
+    });
+
+    // 8. Đăng ký sự kiện Click Tab mới
+    btnTabProfile.addEventListener("click", () => {
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      btnTabProfile.classList.add("active");
+
+      salesSection.style.display = "none";
+      preOrderSection.style.display = "none";
+      ingressSection.style.display = "none";
+      document.getElementById("analyticsSection").style.display = "none";
+      preOrdersManagementSection.style.display = "none";
+      manageWalletSection.style.display = "none";
+      profileSection.style.display = "block";
+
+      loadUserProfile();
+    });
+
+    btnTabManageWallet.addEventListener("click", () => {
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      btnTabManageWallet.classList.add("active");
+
+      salesSection.style.display = "none";
+      preOrderSection.style.display = "none";
+      ingressSection.style.display = "none";
+      document.getElementById("analyticsSection").style.display = "none";
+      preOrdersManagementSection.style.display = "none";
+      profileSection.style.display = "none";
+      manageWalletSection.style.display = "block";
+
+      loadAdminWalletUsers();
+    });
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      if (btn !== btnTabProfile && btn !== btnTabManageWallet) {
+        btn.addEventListener("click", () => {
+          profileSection.style.display = "none";
+          manageWalletSection.style.display = "none";
+        });
+      }
+    });
+
+    // Gắn sự kiện click vào tên tài khoản trên header để chuyển sang tab Tài Khoản
+    lblAccountName.addEventListener("click", () => {
+      btnTabProfile.click();
+    });
+
+
 
     // Tải bảng giá khi chạy chương trình
     loadPricingTable();
