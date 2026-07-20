@@ -68,7 +68,13 @@ function doPost(e) {
         
         if (dbUser === username && dbPass === password) {
           var displayName = String(loginData[i][0]).trim();
-          var role = String(loginData[i][2] || "").trim();
+          var roleArr = [];
+          for (var col = 2; col < loginData[i].length; col++) {
+            if (loginData[i][col]) {
+              roleArr.push(String(loginData[i][col]).trim());
+            }
+          }
+          var role = roleArr.join(" ");
           return ContentService.createTextOutput(JSON.stringify({"result": "success", "username": displayName, "role": role}))
                                .setMimeType(ContentService.MimeType.JSON);
         }
@@ -138,6 +144,34 @@ function doPost(e) {
                            .setMimeType(ContentService.MimeType.JSON);
     }
 
+    // 2.6. LẤY BẢNG GIÁ DÀNH CHO WEB POS (Từ sheet "Dinh-luong-tren-1-ly-nuoc")
+    if (data.action === "getPricingTable") {
+      var sheet = ss.getSheetByName("Dinh-luong-tren-1-ly-nuoc");
+      if (!sheet) {
+        return ContentService.createTextOutput(JSON.stringify({"result": "error", "message": "Không tìm thấy sheet Dinh-luong-tren-1-ly-nuoc"}))
+                             .setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      var rangeData = sheet.getDataRange().getValues();
+      var pricing = {};
+      
+      for (var i = 1; i < rangeData.length; i++) {
+        var item = String(rangeData[i][0]).trim();
+        var size = String(rangeData[i][1]).trim();
+        var price = Number(rangeData[i][2] || 0);
+        
+        if (item && size) {
+          if (!pricing[item]) {
+            pricing[item] = {};
+          }
+          pricing[item][size] = price;
+        }
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({"result": "success", "pricingTable": pricing}))
+                           .setMimeType(ContentService.MimeType.JSON);
+    }
+
     // 2.7. XỬ LÝ LẤY DỮ LIỆU THỐNG KÊ (Cho Web POS)
     if (data.action === "getAnalytics") {
       var warehouse = data.warehouse || "TC01";
@@ -145,6 +179,106 @@ function doPost(e) {
       var dateFilter = data.date || "";
       var analyticsResult = getAnalyticsData(ss, warehouse, monthFilter, dateFilter);
       return ContentService.createTextOutput(JSON.stringify(analyticsResult))
+                           .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 2.8. CẬP NHẬT TRẠNG THÁI ĐƠN ĐẶT TRƯỚC (Sheet "Thong_ke")
+    if (data.action === "updatePreOrderStatus") {
+      var sheet = ss.getSheetByName("Thong_ke");
+      if (!sheet) {
+        return ContentService.createTextOutput(JSON.stringify({"result": "error", "message": "Không tìm thấy sheet Thong_ke"}))
+                             .setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      var orderId = data.orderId;
+      var newStatus = data.status || "Thành công";
+      if (!orderId) {
+        return ContentService.createTextOutput(JSON.stringify({"result": "error", "message": "Thiếu mã đơn hàng"}))
+                             .setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      var range = sheet.getDataRange();
+      var values = range.getValues();
+      var updatedCount = 0;
+      
+      for (var i = 1; i < values.length; i++) {
+        var rowOrderId = String(values[i][11]).trim(); // Cột L - orderId
+        if (rowOrderId === orderId) {
+          sheet.getRange(i + 1, 13).setValue(newStatus); // Cột M - Trạng thái đơn hàng (Cột 13)
+          if (newStatus === "Thành công") {
+            sheet.getRange(i + 1, 1).setValue(new Date()); // Cập nhật thời gian ở cột A
+          }
+          updatedCount++;
+        }
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({"result": "success", "updatedCount": updatedCount}))
+                           .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 2.9. LẤY DANH SÁCH ĐƠN ĐẶT TRƯỚC CHƯA HOÀN THÀNH (Sheet "Thong_ke")
+    if (data.action === "getPreOrders") {
+      var sheet = ss.getSheetByName("Thong_ke");
+      if (!sheet) {
+        return ContentService.createTextOutput(JSON.stringify({"result": "error", "message": "Không tìm thấy sheet Thong_ke"}))
+                             .setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      var currentUser = data.currentUser || "";
+      var userRole = (data.userRole || "").toLowerCase();
+      var isSeller = userRole.indexOf("bán hàng") !== -1;
+      
+      var warehouse = data.warehouse || "TC01";
+      var values = sheet.getDataRange().getValues();
+      var orders = {};
+      
+      for (var i = values.length - 1; i >= 1; i--) { // Đọc ngược từ mới nhất
+        var row = values[i];
+        var rowWarehouse = String(row[1]).trim(); // Cột B
+        var rowOrderMode = String(row[3]).trim(); // Cột D
+        var rowStatus = String(row[12] || "Chờ nhận nước").trim(); // Cột M (Trạng thái đơn hàng)
+        var rowCustomer = String(row[2]).trim(); // Cột C (Khách: Tên - SĐT)
+        var rowNote = String(row[10]).trim(); // Cột K (Ghi chú)
+        
+        // Nếu không có quyền Bán hàng, chỉ lấy đơn do chính tài khoản này đặt
+        if (!isSeller) {
+          // Tài khoản sẽ được gán vào trường note khi đặt đơn, vd: "[Tên_Tài_Khoản]"
+          if (rowCustomer.indexOf(currentUser) === -1 && rowNote.indexOf("[" + currentUser + "]") === -1) {
+            continue;
+          }
+        }
+        
+        if (rowWarehouse === warehouse && rowOrderMode === "Đặt trước" && rowStatus !== "Thành công") {
+          var orderId = String(row[11]).trim(); // Cột L
+          if (!orderId) continue;
+          
+          if (!orders[orderId]) {
+            orders[orderId] = {
+              orderId: orderId,
+              time: row[0],
+              seller: String(row[2]).trim(), // Khách: Tên - SĐT
+              payment: String(row[9]).trim(),
+              note: String(row[10]).trim(),
+              status: rowStatus,
+              items: []
+            };
+          }
+          
+          orders[orderId].items.push({
+            coffeeType: String(row[4]).trim(),
+            size: String(row[5]).trim(),
+            quantity: Number(row[6] || 0),
+            price: Number(row[7] || 0)
+          });
+        }
+      }
+      
+      var orderList = [];
+      for (var key in orders) {
+        orderList.push(orders[key]);
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({"result": "success", "orders": orderList}))
                            .setMimeType(ContentService.MimeType.JSON);
     }
     
@@ -157,6 +291,13 @@ function doPost(e) {
     
     var orderId = "ORD-" + new Date().getTime();
     var orderMode = data.orderMode || "Đơn lẻ";
+    var statusVal = (orderMode.indexOf("Đặt trước") !== -1) ? "Chờ nhận nước" : "Thành công";
+    
+    // Gắn currentUser vào Ghi chú để tiện lọc
+    var finalNote = data.note || "";
+    if (data.currentUser) {
+      finalNote += " [" + data.currentUser + "]";
+    }
     
     // Tối ưu hóa: Thu thập tất cả các hàng cần chèn vào mảng 2 chiều và ghi nhận bằng 1 giao dịch duy nhất thay vì lặp đi lặp lại
     var rowsToInsert = [];
@@ -175,8 +316,9 @@ function doPost(e) {
           item.price,
           item.price * item.quantity,
           data.payment, 
-          data.note || "",
-          orderId
+          finalNote,
+          orderId,
+          statusVal
         ]);
       });
     } else {
@@ -192,8 +334,9 @@ function doPost(e) {
         price,
         price * data.quantity,
         data.payment, 
-        data.note || "",
-        orderId
+        finalNote,
+        orderId,
+        statusVal
       ]);
     }
     
@@ -201,9 +344,43 @@ function doPost(e) {
     if (rowsToInsert.length > 0) {
       var lastRow = getLastDataRow(orderSheet);
       orderSheet.getRange(lastRow + 1, 1, rowsToInsert.length, rowsToInsert[0].length).setValues(rowsToInsert);
+      
+      // Xử lý cập nhật đơn cũ nếu có (Tính năng Chỉnh sửa đơn)
+      if (data.oldOrderIdToUpdate) {
+        var range = orderSheet.getDataRange();
+        var values = range.getValues();
+        for (var i = 1; i < values.length; i++) {
+          if (String(values[i][11]).trim() === data.oldOrderIdToUpdate) {
+            orderSheet.getRange(i + 1, 13).setValue("Update (" + orderId + ")");
+          }
+        }
+      }
+      
+      // Nếu là đặt trước, gửi thông báo Telegram
+      if (orderMode.indexOf("Đặt trước") !== -1) {
+        var msg = "🔔 <b>ĐƠN ĐẶT TRƯỚC MỚI</b>\n" +
+                  "• <b>Chi nhánh:</b> " + warehouse + "\n" +
+                  "• <b>Khách hàng:</b> " + String(data.seller).replace("Khách: ", "") + "\n" +
+                  "• <b>Ghi chú:</b> " + (data.note || "Không") + "\n" +
+                  "• <b>Mã đơn:</b> <code>" + orderId + "</code>\n" +
+                  "• <b>Chi tiết món:</b>\n";
+                  
+        var totalVal = 0;
+        if (data.items && data.items.length > 0) {
+          data.items.forEach(function(item) {
+            msg += "  + " + item.coffeeType + " (" + item.size + ") x " + item.quantity + "\n";
+            totalVal += item.price * item.quantity;
+          });
+        } else {
+          msg += "  + " + data.coffeeType + " (" + data.size + ") x " + data.quantity + "\n";
+          totalVal = (data.price || 0) * (data.quantity || 1);
+        }
+        msg += "• <b>Tổng tiền:</b> " + totalVal.toLocaleString('vi-VN') + "đ (" + (data.payment || "Tiền mặt") + ")";
+        sendTelegramMessage(msg);
+      }
     }
     
-    return ContentService.createTextOutput(JSON.stringify({"result": "success"}))
+    return ContentService.createTextOutput(JSON.stringify({"result": "success", "orderId": orderId}))
                          .setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({"result": "error", "message": error.toString()}))
@@ -393,4 +570,30 @@ function getAnalyticsData(ss, warehouse, monthFilter, dateFilter) {
     dailyStats: dailyList,
     availableMonths: allMonths
   };
+}
+
+// Gửi thông báo qua Telegram Bot API (Tùy chọn cấu hình)
+function sendTelegramMessage(text) {
+  var botToken = ""; // Nhập Token của Telegram Bot tại đây để kích hoạt
+  var chatId = "";   // Nhập Chat ID của group Telegram tại đây để kích hoạt
+  
+  if (botToken && chatId) {
+    var url = "https://api.telegram.org/bot" + botToken + "/sendMessage";
+    var payload = {
+      "chat_id": chatId,
+      "text": text,
+      "parse_mode": "HTML"
+    };
+    var options = {
+      "method": "post",
+      "contentType": "application/json",
+      "payload": JSON.stringify(payload),
+      "muteHttpExceptions": true
+    };
+    try {
+      UrlFetchApp.fetch(url, options);
+    } catch(e) {
+      Logger.log("Lỗi gửi tin nhắn Telegram: " + e.toString());
+    }
+  }
 }
