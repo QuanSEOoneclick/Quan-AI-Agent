@@ -3939,6 +3939,7 @@
     }
 
     function renderPreOrdersList(orders) {
+      const savedRole = localStorage.getItem("today_coffee_role") || "";
       if (orders.length === 0) {
         preOrdersListContainer.innerHTML = '<div style="font-size: 12px; color: var(--text-secondary); text-align: center; padding: 40px 20px; background: var(--white); border: 1.5px solid var(--border); border-radius: 12px; font-weight: 500;">☕ Hiện chưa có đơn đặt trước nào cần xử lý cho kho này.</div>';
         return;
@@ -3985,12 +3986,8 @@
         const borderStyle = order.status === "Đã chuẩn bị" ? "border: 2px solid #22c55e;" : "border: 1.5px solid var(--border);";
         const badgeBg = order.status === "Đã chuẩn bị" ? "#22c55e" : (order.status.startsWith("Cập nhật") ? "#6b7280" : "#eab308");
         
-        // Ẩn nút "Chuẩn bị xong" và "Hoàn thành giao" nếu trạng thái đã là Cập nhật
+        // Ẩn dropdown và nút xác nhận nếu trạng thái đã là Cập nhật
         const isUpdated = order.status.startsWith("Cập nhật");
-        
-        const buttonPreCompleteHtml = (!isUpdated && order.status === "Chờ nhận nước")
-          ? `<button type="button" class="btn-primary" style="background: #efebe4; color: var(--coffee-brown); border: 1px solid #e4d8c5; width: auto; font-size: 11px; padding: 6px 12px; height: 32px;" onclick="updatePreOrderStatus('${order.orderId}', 'Đã chuẩn bị')">Chuẩn bị xong</button>`
-          : "";
           
         const orderDate = new Date(order.time);
         const now = new Date();
@@ -3999,8 +3996,22 @@
         let buttonEditHtml = "";
         if (isToday && !isUpdated) {
           const orderJson = encodeURIComponent(JSON.stringify(order));
-          buttonEditHtml = `<button type="button" class="btn-primary" style="background: #f59e0b; color: white; width: auto; font-size: 11px; padding: 6px 12px; height: 32px; border: none;" onclick="editPreOrder('${orderJson}')">✏️ Sửa</button>`;
+          buttonEditHtml = `<button type="button" class="btn-primary" style="background: #f59e0b; color: white; width: auto; font-size: 11px; padding: 0 10px; height: 26px; line-height: 26px; border: none; flex-shrink: 0;" onclick="editPreOrder('${orderJson}')">✏️ Sửa</button>`;
         }
+        
+        const statusDropdownHtml = isUpdated ? "" : `
+          <div style="display: flex; gap: 4px; align-items: center;">
+            <select id="statusSelect_${order.orderId}" style="border: 1px solid #c4b5a2; border-radius: 6px; padding: 0 6px; font-size: 11px; height: 26px; color: var(--text-main); background: #fdfbf7; outline: none; flex-shrink: 1;">
+              <option value="Chờ nhận nước" ${order.status === 'Chờ nhận nước' ? 'selected' : ''}>Chờ nhận nước</option>
+              <option value="Đã chuẩn bị" ${order.status === 'Đã chuẩn bị' ? 'selected' : ''}>Đã chuẩn bị</option>
+              <option value="Thành công" ${order.status === 'Thành công' ? 'selected' : ''}>Thành công</option>
+              <option value="Đã huỷ" ${order.status === 'Đã huỷ' ? 'selected' : ''}>Đã huỷ</option>
+            </select>
+            <button type="button" class="btn-primary" style="background: #1b4d3e; color: white; width: auto; font-size: 11px; padding: 0 10px; height: 26px; line-height: 26px; border: none; flex-shrink: 0;" onclick="updatePreOrderStatus('${order.orderId}', document.getElementById('statusSelect_${order.orderId}').value)">
+              Lưu
+            </button>
+          </div>
+        `;
 
 
         const card = document.createElement("div");
@@ -4037,16 +4048,15 @@
               <strong style="font-size: 14.5px; color: #1b4d3e;">${totalVal.toLocaleString('vi-VN')}đ</strong>
             </div>
             
-            <div style="display: flex; gap: 6px;">
+            <div style="display: flex; gap: 6px; align-items: center; justify-content: flex-end; flex-wrap: wrap;">
               ${
-                (savedRole.includes("Bán hàng"))
+                (savedRole.toLowerCase().includes("bán hàng"))
                 ? `
                     ${buttonEditHtml}
-                    ${buttonPreCompleteHtml}
-                    ${!isUpdated ? `<button type="button" class="btn-primary" style="background: #1b4d3e; color: white; width: auto; font-size: 11px; padding: 6px 12px; height: 32px;" onclick="updatePreOrderStatus('${order.orderId}', 'Thành công')">✓ Xong</button>` : ""}
+                    ${statusDropdownHtml}
                   `
                 : `
-                    <button type="button" class="btn-primary" style="background: #1b4d3e; color: white; width: auto; font-size: 11px; padding: 6px 12px; height: 32px; border: none;" onclick="viewPreOrder('${encodeURIComponent(JSON.stringify(order))}')">👁️ Xem lại đơn</button>
+                    <button type="button" class="btn-primary" style="background: #1b4d3e; color: white; width: auto; font-size: 11px; padding: 0 10px; height: 26px; line-height: 26px; border: none;" onclick="viewPreOrder('${encodeURIComponent(JSON.stringify(order))}')">👁️ Xem lại đơn</button>
                     ${buttonEditHtml}
                   `
               }

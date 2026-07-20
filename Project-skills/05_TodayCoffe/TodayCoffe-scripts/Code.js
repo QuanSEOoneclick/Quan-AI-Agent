@@ -446,13 +446,13 @@ function getAnalyticsData(ss, warehouse, monthFilter, dateFilter) {
     var dateKey = Utilities.formatDate(dateObj, Session.getScriptTimeZone(), "yyyy-MM-dd");
     if (dateFilter && dateKey !== dateFilter) continue;
     
-    // Đọc doanh thu (Cột I, chỉ số 8) và Chi phí cố định (Cột AC, chỉ số 28)
+    // Đọc doanh thu (Cột I, chỉ số 8) và Chi phí cố định (Cột AD, chỉ số 29)
     var revenue = Number(row[8] || 0);
-    var fixedCostAlloc = Number(row[28] || 0);
+    var fixedCostAlloc = Number(row[29] || 0);
     
-    // Tính tổng chi phí nguyên liệu (Cột N đến X, chỉ số từ 13 đến 23)
+    // Tính tổng chi phí nguyên liệu (Cột O đến AC, chỉ số từ 14 đến 28)
     var ingredientCost = 0;
-    for (var col = 13; col <= 23; col++) {
+    for (var col = 14; col <= 28; col++) {
       ingredientCost += Number(row[col] || 0);
     }
     
