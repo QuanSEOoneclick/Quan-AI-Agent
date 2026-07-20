@@ -413,8 +413,18 @@ function getAnalyticsData(ss, warehouse, monthFilter, dateFilter) {
   
   var dailyStats = {};
   var totalRevenue = 0;
+  var pendingRevenue = 0;
+  var cancelledRevenue = 0;
   var totalIngredientCost = 0;
   var totalFixedCostAllocated = 0;
+  var statusCounts = {
+    "Thành công": 0,
+    "Chờ nhận nước": 0,
+    "Đã chuẩn bị": 0,
+    "Đã huỷ": 0,
+    "Khác": 0
+  };
+  var totalOrders = 0;
   var allMonths = [];
   
   // 1. Phân tích dữ liệu đơn hàng
@@ -447,8 +457,19 @@ function getAnalyticsData(ss, warehouse, monthFilter, dateFilter) {
     if (dateFilter && dateKey !== dateFilter) continue;
     
     // Đọc doanh thu (Cột I, chỉ số 8) và Chi phí cố định (Cột AD, chỉ số 29)
+    var rowStatus = String(row[12] || "").trim();
     var revenue = Number(row[8] || 0);
     var fixedCostAlloc = Number(row[29] || 0);
+    
+    // Bỏ qua đếm các dòng Update (đơn đã bị chỉnh sửa)
+    if (rowStatus.startsWith("Cập nhật") || rowStatus.startsWith("Update")) continue;
+    
+    totalOrders++;
+    if (rowStatus === "Thành công") statusCounts["Thành công"]++;
+    else if (rowStatus === "Chờ nhận nước") statusCounts["Chờ nhận nước"]++;
+    else if (rowStatus === "Đã chuẩn bị") statusCounts["Đã chuẩn bị"]++;
+    else if (rowStatus === "Đã huỷ") statusCounts["Đã huỷ"]++;
+    else statusCounts["Khác"]++;
     
     // Tính tổng chi phí nguyên liệu (Cột O đến AC, chỉ số từ 14 đến 28)
     var ingredientCost = 0;
@@ -459,17 +480,32 @@ function getAnalyticsData(ss, warehouse, monthFilter, dateFilter) {
     if (!dailyStats[dateKey]) {
       dailyStats[dateKey] = {
         date: dateKey,
+        totalCount: 0,
+        successCount: 0,
+        cancelledCount: 0,
         revenue: 0,
+        pendingRevenue: 0,
         ingredientCost: 0,
         fixedCostAllocated: 0
       };
     }
     
-    dailyStats[dateKey].revenue += revenue;
+    dailyStats[dateKey].totalCount++;
+    if (rowStatus === "Thành công") {
+      dailyStats[dateKey].successCount++;
+      dailyStats[dateKey].revenue += revenue;
+      totalRevenue += revenue;
+    } else if (rowStatus === "Đã huỷ") {
+      dailyStats[dateKey].cancelledCount++;
+      cancelledRevenue += revenue;
+    } else {
+      dailyStats[dateKey].pendingRevenue += revenue;
+      pendingRevenue += revenue;
+    }
+    
     dailyStats[dateKey].ingredientCost += ingredientCost;
     dailyStats[dateKey].fixedCostAllocated += fixedCostAlloc;
     
-    totalRevenue += revenue;
     totalIngredientCost += ingredientCost;
     totalFixedCostAllocated += fixedCostAlloc;
   }
@@ -561,6 +597,10 @@ function getAnalyticsData(ss, warehouse, monthFilter, dateFilter) {
     result: "success",
     summary: {
       totalRevenue: totalRevenue,
+      pendingRevenue: pendingRevenue,
+      cancelledRevenue: cancelledRevenue,
+      totalOrders: totalOrders,
+      statusCounts: statusCounts,
       totalProfitBeforeFixedCost: totalProfitBeforeFixedCost,
       totalProfitAfterFixedCost: totalRevenue - totalIngredientCost - totalFixedCostAllocated,
       totalFixedCostMonthly: totalFixedCostMonthly,

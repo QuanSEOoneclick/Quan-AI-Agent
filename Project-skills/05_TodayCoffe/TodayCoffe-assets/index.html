@@ -770,6 +770,26 @@
       flex-direction: column;
       gap: 4px;
     }
+    
+    .analytics-card.card-net {
+      grid-column: span 2;
+      background: #eefdf4;
+      border-color: #bbf7d0;
+    }
+    .analytics-card.card-net .card-title { color: #166534; }
+    .analytics-card.card-net .card-value { color: #166534; font-size: 20px; }
+
+    .analytics-card.card-pending { background: #fefce8; border-color: #fef08a; }
+    .analytics-card.card-pending .card-title { color: #854d0e; }
+    .analytics-card.card-pending .card-value { color: #854d0e; }
+
+    .analytics-card.card-loss {
+      grid-column: span 2;
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+    .analytics-card.card-loss .card-title { color: #991b1b; }
+    .analytics-card.card-loss .card-value { color: #991b1b; }
 
     .analytics-card .card-title {
       font-size: 11px;
@@ -1834,21 +1854,25 @@
 
             <!-- Summary Grid -->
             <div class="analytics-grid">
+              <div class="analytics-card card-net">
+                <span class="card-title">LỢI NHUẬN RÒNG (Sau CP Cố Định)</span>
+                <span class="card-value" id="lblNetProfit">0đ</span>
+                <span style="font-size: 11px; color: #15803d; margin-top: 4px;" id="lblGrossProfitSubtitle">Lợi nhuận gộp: 0đ</span>
+              </div>
               <div class="analytics-card">
-                <span class="card-title">Doanh Thu</span>
+                <span class="card-title">DOANH THU THỰC TẾ</span>
                 <span class="card-value" id="lblTotalRevenue">0đ</span>
               </div>
-              <div class="analytics-card">
-                <span class="card-title">LN Chưa CP Cố Định</span>
-                <span class="card-value" id="lblGrossProfit">0đ</span>
+              <div class="analytics-card card-pending">
+                <span class="card-title">DOANH THU ĐANG CHỜ</span>
+                <span class="card-value" id="lblPendingRevenue">0đ</span>
               </div>
-              <div class="analytics-card">
-                <span class="card-title">LN Đã Tính CP Cố Định</span>
-                <span class="card-value" id="lblNetProfit">0đ</span>
-              </div>
-              <div class="analytics-card">
-                <span class="card-title">CP Cố Định Tháng</span>
-                <span class="card-value" id="lblTotalFixedCost">0đ</span>
+              <div class="analytics-card card-loss">
+                <span class="card-title">TỈ LỆ THẤT THOÁT / HỦY ĐƠN</span>
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <span class="card-value" id="lblCancelledRevenue">0đ</span>
+                  <span style="font-size: 12px; font-weight: 700; color: #b91c1c;" id="lblCancelledCount">0 đơn</span>
+                </div>
               </div>
             </div>
 
@@ -1859,10 +1883,35 @@
                 <span>TIẾN ĐỘ HÒA VỐN</span>
                 <span id="lblBreakEvenProgress">0%</span>
               </div>
+              <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">CP Cố định tháng: <span id="lblTotalFixedCost">0đ</span></div>
               <div class="progress-bar-be-wrapper">
                 <div id="pbBreakEven" class="progress-bar-be"></div>
               </div>
               <div id="lblBreakEvenDaysEst" class="be-status-text">Đang tính toán...</div>
+            </div>
+            
+            <!-- Order Funnel -->
+            <div class="progress-container-be">
+              <div style="font-size: 13px; font-weight: 700; color: var(--coffee-brown); margin-bottom: 12px;">PHÂN TÍCH TRẠNG THÁI ĐƠN (<span id="lblTotalOrdersCount">0</span>)</div>
+              
+              <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; font-weight: 600;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 6px;">
+                  <span style="color: #166534;">🟢 Thành công</span>
+                  <span id="lblStatusSuccess" style="color: #166534;">0 đơn (0%)</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 6px;">
+                  <span style="color: #854d0e;">🟡 Đã chuẩn bị (Chờ lấy)</span>
+                  <span id="lblStatusReady" style="color: #854d0e;">0 đơn</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 6px;">
+                  <span style="color: #c2410c;">🟠 Chờ pha chế</span>
+                  <span id="lblStatusPending" style="color: #c2410c;">0 đơn</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="color: #991b1b;">🔴 Đã hủy / Thất bại</span>
+                  <span id="lblStatusCancelled" style="color: #991b1b;">0 đơn</span>
+                </div>
+              </div>
             </div>
 
             <!-- Bảng số liệu hàng ngày -->
@@ -1872,9 +1921,10 @@
                 <thead>
                   <tr>
                     <th>Ngày</th>
+                    <th>Đơn / Hủy</th>
                     <th>Doanh thu</th>
-                    <th>LN trước CP</th>
-                    <th>LN sau CP</th>
+                    <th>Lợi nhuận gộp</th>
+                    <th>Lợi nhuận ròng</th>
                   </tr>
                 </thead>
                 <tbody id="tblAnalyticsBody">
@@ -2896,20 +2946,39 @@
           progressBar.style.width = "90%";
           progressText.innerText = "Đang hoàn tất hiển thị... 90%";
 
-          if (res.result === "success" && res.summary) {
-            // Hiển thị trị số tích lũy
-            document.getElementById("lblTotalRevenue").innerText = `${res.summary.totalRevenue.toLocaleString('vi-VN')}đ`;
-            document.getElementById("lblGrossProfit").innerText = `${res.summary.totalProfitBeforeFixedCost.toLocaleString('vi-VN')}đ`;
-            document.getElementById("lblNetProfit").innerText = `${res.summary.totalProfitAfterFixedCost.toLocaleString('vi-VN')}đ`;
-            document.getElementById("lblTotalFixedCost").innerText = `${res.summary.totalFixedCostMonthly.toLocaleString('vi-VN')}đ`;
+            if (res.result === "success" && res.summary) {
+              // Hiển thị trị số tích lũy
+              document.getElementById("lblNetProfit").innerText = `${res.summary.totalProfitAfterFixedCost.toLocaleString('vi-VN')}đ`;
+              document.getElementById("lblGrossProfitSubtitle").innerText = `Lợi nhuận gộp: ${res.summary.totalProfitBeforeFixedCost.toLocaleString('vi-VN')}đ`;
+              document.getElementById("lblTotalRevenue").innerText = `${res.summary.totalRevenue.toLocaleString('vi-VN')}đ`;
+              document.getElementById("lblPendingRevenue").innerText = `${(res.summary.pendingRevenue || 0).toLocaleString('vi-VN')}đ`;
+              document.getElementById("lblCancelledRevenue").innerText = `${(res.summary.cancelledRevenue || 0).toLocaleString('vi-VN')}đ`;
+              document.getElementById("lblTotalFixedCost").innerText = `${res.summary.totalFixedCostMonthly.toLocaleString('vi-VN')}đ`;
+              
+              // Funnel stats
+              const total = res.summary.totalOrders || 0;
+              document.getElementById("lblTotalOrdersCount").innerText = total;
+              
+              const successCount = res.summary.statusCounts["Thành công"] || 0;
+              const readyCount = res.summary.statusCounts["Đã chuẩn bị"] || 0;
+              const waitCount = res.summary.statusCounts["Chờ nhận nước"] || 0;
+              const cancelCount = res.summary.statusCounts["Đã huỷ"] || 0;
+              
+              document.getElementById("lblCancelledCount").innerText = `${cancelCount} đơn`;
+              
+              const successPercent = total > 0 ? Math.round((successCount / total) * 100) : 0;
+              document.getElementById("lblStatusSuccess").innerText = `${successCount} đơn (${successPercent}%)`;
+              document.getElementById("lblStatusReady").innerText = `${readyCount} đơn`;
+              document.getElementById("lblStatusPending").innerText = `${waitCount} đơn`;
+              document.getElementById("lblStatusCancelled").innerText = `${cancelCount} đơn`;
 
-            // Đổi màu trị số Lợi nhuận ròng dựa trên lãi/lỗ
-            const lblNet = document.getElementById("lblNetProfit");
-            if (res.summary.totalProfitAfterFixedCost >= 0) {
-              lblNet.className = "card-value text-success-green";
-            } else {
-              lblNet.className = "card-value text-danger-red";
-            }
+              // Đổi màu trị số Lợi nhuận ròng dựa trên lãi/lỗ
+              const lblNet = document.getElementById("lblNetProfit");
+              if (res.summary.totalProfitAfterFixedCost >= 0) {
+                lblNet.className = "card-value text-success-green";
+              } else {
+                lblNet.className = "card-value text-danger-red";
+              }
 
             // Cập nhật Tiến độ hòa vốn
             document.getElementById("lblBreakEvenProgress").innerText = `${res.summary.breakEvenProgress}%`;
@@ -2948,6 +3017,9 @@
 
                 tr.innerHTML = `
                 <td>${dateFormatted}</td>
+                <td>
+                  <span style="color: #166534; font-weight: 700;">${day.successCount || 0}</span> / <span style="color: #991b1b;">${day.cancelledCount || 0}</span>
+                </td>
                 <td>${day.revenue.toLocaleString('vi-VN')}đ</td>
                 <td class="${gpClass}">${day.profitBeforeFixedCost.toLocaleString('vi-VN')}đ</td>
                 <td class="${npClass}">${day.profitAfterFixedCost.toLocaleString('vi-VN')}đ</td>
@@ -4000,8 +4072,7 @@
         }
         
         const statusDropdownHtml = isUpdated ? "" : `
-          <div style="display: flex; gap: 4px; align-items: center;">
-            <select id="statusSelect_${order.orderId}" style="border: 1px solid #c4b5a2; border-radius: 6px; padding: 0 6px; font-size: 11px; height: 26px; color: var(--text-main); background: #fdfbf7; outline: none; flex-shrink: 1;">
+            <select id="statusSelect_${order.orderId}" style="border: 1px solid #c4b5a2; border-radius: 6px; padding: 0 4px; font-size: 11px; height: 26px; color: var(--text-main); background: #fdfbf7; outline: none; flex-shrink: 1; min-width: 0; max-width: 110px; text-overflow: ellipsis;">
               <option value="Chờ nhận nước" ${order.status === 'Chờ nhận nước' ? 'selected' : ''}>Chờ nhận nước</option>
               <option value="Đã chuẩn bị" ${order.status === 'Đã chuẩn bị' ? 'selected' : ''}>Đã chuẩn bị</option>
               <option value="Thành công" ${order.status === 'Thành công' ? 'selected' : ''}>Thành công</option>
@@ -4010,7 +4081,6 @@
             <button type="button" class="btn-primary" style="background: #1b4d3e; color: white; width: auto; font-size: 11px; padding: 0 10px; height: 26px; line-height: 26px; border: none; flex-shrink: 0;" onclick="updatePreOrderStatus('${order.orderId}', document.getElementById('statusSelect_${order.orderId}').value)">
               Lưu
             </button>
-          </div>
         `;
 
 
@@ -4042,13 +4112,13 @@
           ${cleanNote ? `<div style="font-size: 12px; color: var(--text-secondary); background: #faf8f5; border-radius: 6px; padding: 6px 8px; margin-bottom: 10px; border-left: 3px solid #c4b5a2;">📝 Ghi chú: ${cleanNote}</div>` : ""}
 
           <!-- Tổng tiền & Các nút hành động -->
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
-            <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; gap: 4px;">
+            <div style="flex-shrink: 0;">
               <span style="font-size: 11px; color: var(--text-secondary); display: block;">Tổng tiền (${order.payment}):</span>
               <strong style="font-size: 14.5px; color: #1b4d3e;">${totalVal.toLocaleString('vi-VN')}đ</strong>
             </div>
             
-            <div style="display: flex; gap: 6px; align-items: center; justify-content: flex-end; flex-wrap: wrap;">
+            <div style="display: flex; gap: 4px; align-items: center; justify-content: flex-end; flex-wrap: nowrap; flex: 1; min-width: 0;">
               ${
                 (savedRole.toLowerCase().includes("bán hàng"))
                 ? `
