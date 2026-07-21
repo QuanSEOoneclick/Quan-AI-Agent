@@ -22,10 +22,12 @@ function doPost(e) {
         if (dbUser) {
           var dbRole = String(loginData[i][2] || "").trim();
           var balance = Number(loginData[i][balanceColIdx - 1] || 0);
+          var rate = Number(loginData[i][4] !== "" ? loginData[i][4] : 0.05);
           users.push({
             username: dbUser,
             role: dbRole,
-            balance: balance
+            balance: balance,
+            accumulationRate: rate
           });
         }
       }
@@ -77,7 +79,14 @@ function doPost(e) {
           var dbRoleName = String(loginData[i][2] || "").trim();
           var rolePermissions = resolvePermissions(ss, dbRoleName);
           var balance = Number(loginData[i][balanceColIdx - 1] || 0);
-          return ContentService.createTextOutput(JSON.stringify({"result": "success", "username": displayName, "role": rolePermissions, "balance": balance}))
+          var rate = Number(loginData[i][4] !== "" ? loginData[i][4] : 0.05);
+          return ContentService.createTextOutput(JSON.stringify({
+            "result": "success", 
+            "username": displayName, 
+            "role": rolePermissions, 
+            "balance": balance,
+            "accumulationRate": rate
+          }))
                                .setMimeType(ContentService.MimeType.JSON);
         }
       }
@@ -239,12 +248,34 @@ function doPost(e) {
         // Xử lý tiền ví
         if (orderUser) {
           if (newStatus === "Thành công") {
-            // Tích lũy 1% trên số tiền thực trả bằng tiền mặt/chuyển khoản
+            // Lấy tỷ lệ tích lũy của khách hàng
+            var loginSheet = ss.getSheetByName("Dang-nhap");
+            var loginValues = loginSheet ? loginSheet.getDataRange().getValues() : [];
+            var targetAccumulationRate = 0.05;
+            for (var u = 1; u < loginValues.length; u++) {
+              if (String(loginValues[u][0]).trim().toLowerCase() === orderUser.toLowerCase()) {
+                targetAccumulationRate = Number(loginValues[u][4] !== "" ? loginValues[u][4] : 0.05);
+                break;
+              }
+            }
+            
+            // Tích lũy theo tỷ lệ lấy từ sheet
             var actualCash = Math.max(0, totalVal - usedWalletAmount);
-            var earned = Math.floor(actualCash * 0.01);
+            var earned = Math.floor(actualCash * targetAccumulationRate);
             if (earned > 0) {
               var finalBal = adjustUserWalletBalance(ss, orderUser, earned);
-              logWalletTransaction(ss, "Hệ thống", orderUser, "Tích lũy đơn Đặt Trước", orderId, earned, finalBal, "Tích lũy 1% khi hoàn tất đơn " + orderId);
+              logWalletTransaction(ss, "Hệ thống", orderUser, "Tích lũy đơn Đặt Trước", orderId, earned, finalBal, "Tích lũy " + (targetAccumulationRate * 100) + "% khi hoàn tất đơn " + orderId);
+              
+              // Ghi đè ghi chú của tất cả các dòng của đơn này để lưu trữ tag [TÍCH_LŨY: XXX]
+              for (var i = 1; i < values.length; i++) {
+                var rowOrderId = String(values[i][11]).trim();
+                if (rowOrderId === orderId) {
+                  var currentNote = String(values[i][10] || "").trim();
+                  if (currentNote.indexOf("TÍCH_LŨY:") === -1) {
+                    sheet.getRange(i + 1, 11).setValue(currentNote + " [TÍCH_LŨY: " + earned + "]");
+                  }
+                }
+              }
             }
           } else if (newStatus === "Đã huỷ") {
             // Hoàn ví nếu có sử dụng ví
@@ -439,6 +470,17 @@ function doPost(e) {
                              .setMimeType(ContentService.MimeType.JSON);
       }
       
+      // Lấy tỷ lệ tích lũy của user để làm fallback cho các đơn hàng cũ chưa có tag [TÍCH_LŨY: XXX]
+      var loginSheet = ss.getSheetByName("Dang-nhap");
+      var loginValues = loginSheet.getDataRange().getValues();
+      var userAccRate = 0.05;
+      for (var u = 1; u < loginValues.length; u++) {
+        if (String(loginValues[u][0]).trim().toLowerCase() === username.toLowerCase()) {
+          userAccRate = Number(loginValues[u][4] !== "" ? loginValues[u][4] : 0.05);
+          break;
+        }
+      }
+
       var values = orderSheet.getDataRange().getValues();
       var orders = {};
       
@@ -471,7 +513,8 @@ function doPost(e) {
             status: rowStatus,
             items: [],
             totalAmount: 0,
-            usedBalance: parsedTags.wallet
+            usedBalance: parsedTags.wallet,
+            earnedBalance: parsedTags.earned
           };
         }
         
@@ -489,12 +532,14 @@ function doPost(e) {
       var orderList = [];
       for (var key in orders) {
         var ord = orders[key];
-        var earned = 0;
-        if (ord.status === "Thành công") {
-          var cashPaid = Math.max(0, ord.totalAmount - ord.usedBalance);
-          earned = Math.floor(cashPaid * 0.01);
+        if (!ord.earnedBalance || ord.earnedBalance === 0) {
+          var earned = 0;
+          if (ord.status === "Thành công") {
+            var cashPaid = Math.max(0, ord.totalAmount - ord.usedBalance);
+            earned = Math.floor(cashPaid * userAccRate);
+          }
+          ord.earnedBalance = earned;
         }
-        ord.earnedBalance = earned;
         orderList.push(ord);
       }
       
@@ -512,6 +557,12 @@ function doPost(e) {
     var orderId = data.orderId || ("ORD-" + new Date().getTime());
     var orderMode = data.orderMode || "Đơn lẻ";
     var statusVal = (orderMode.indexOf("Đặt trước") !== -1) ? "Chờ nhận nước" : "Thành công";
+    
+    // Đơn đặt trước không áp dụng hình thức thanh toán tiền mặt
+    if (orderMode.indexOf("Đặt trước") !== -1 && data.payment === "Tiền mặt") {
+      return ContentService.createTextOutput(JSON.stringify({"result": "error", "message": "Đơn hàng đặt trước không áp dụng hình thức thanh toán tiền mặt!"}))
+                           .setMimeType(ContentService.MimeType.JSON);
+    }
     
     // Gắn currentUser vào Ghi chú để tiện lọc
     var finalNote = data.note || "";
@@ -534,6 +585,7 @@ function doPost(e) {
     usedBalance = Math.min(usedBalance, totalVal);
     
     var dbUserBalance = 0;
+    var userAccumulationRate = 0.05; // Mặc định 5%
     var loginSheet = ss.getSheetByName("Dang-nhap");
     var loginValues = loginSheet.getDataRange().getValues();
     var balanceColIdx = getOrInitBalanceColumn(loginSheet, loginValues[0]);
@@ -543,6 +595,7 @@ function doPost(e) {
       for (var i = 1; i < loginValues.length; i++) {
         if (String(loginValues[i][0]).trim().toLowerCase() === String(data.currentUser).trim().toLowerCase()) {
           dbUserBalance = Number(loginValues[i][balanceColIdx - 1] || 0);
+          userAccumulationRate = Number(loginValues[i][4] !== "" ? loginValues[i][4] : 0.05);
           userRowIdx = i + 1;
           break;
         }
@@ -553,6 +606,16 @@ function doPost(e) {
     
     if (usedBalance > 0) {
       finalNote += " [VÍ_TRỪ: " + usedBalance + "]";
+    }
+    
+    // Tính điểm tích lũy dự kiến nếu đơn thành công trực tiếp (POS)
+    var earnedPoints = 0;
+    if (statusVal === "Thành công" && data.currentUser) {
+      var actualCashPaid = Math.max(0, totalVal - usedBalance);
+      earnedPoints = Math.floor(actualCashPaid * userAccumulationRate);
+      if (earnedPoints > 0) {
+        finalNote += " [TÍCH_LŨY: " + earnedPoints + "]";
+      }
     }
     
     var finalPayment = data.payment || "";
@@ -613,14 +676,9 @@ function doPost(e) {
       }
       
       // Nếu là đơn hàng POS thành công trực tiếp, cộng điểm tích lũy ngay lập tức
-      var earnedPoints = 0;
-      if (statusVal === "Thành công" && data.currentUser) {
-        var actualCashPaid = Math.max(0, totalVal - usedBalance);
-        earnedPoints = Math.floor(actualCashPaid * 0.01);
-        if (earnedPoints > 0) {
-          var finalBal = adjustUserWalletBalance(ss, data.currentUser, earnedPoints, loginSheet, balanceColIdx, loginValues);
-          logWalletTransaction(ss, "Hệ thống", data.currentUser, "Tích lũy đơn POS", orderId, earnedPoints, finalBal, "Tích lũy 1% cho đơn hàng " + orderId);
-        }
+      if (statusVal === "Thành công" && data.currentUser && earnedPoints > 0) {
+        var finalBal = adjustUserWalletBalance(ss, data.currentUser, earnedPoints, loginSheet, balanceColIdx, loginValues);
+        logWalletTransaction(ss, "Hệ thống", data.currentUser, "Tích lũy đơn POS", orderId, earnedPoints, finalBal, "Tích lũy " + (userAccumulationRate * 100) + "% cho đơn hàng " + orderId);
       }
       
       // Xử lý cập nhật đơn cũ nếu có (Tính năng Chỉnh sửa đơn)
@@ -634,7 +692,7 @@ function doPost(e) {
         }
       }
       
-      // Nếu là đặt trước, gửi thông báo Telegram & Discord
+      // Nếu là đặt trước, gửi thông báo Telegram
       if (orderMode.indexOf("Đặt trước") !== -1) {
         var msg = "🔔 <b>ĐƠN ĐẶT TRƯỚC MỚI</b>\n" +
                   "• <b>Chi nhánh:</b> " + warehouse + "\n" +
@@ -644,37 +702,47 @@ function doPost(e) {
                   "• <b>Chi tiết món:</b>\n";
                   
         var tVal = 0;
-        var discordItemsText = "";
         if (data.items && data.items.length > 0) {
           data.items.forEach(function(item) {
             msg += "  + " + item.coffeeType + " (" + item.size + ") x " + item.quantity + "\n";
-            discordItemsText += "• " + item.coffeeType + " (" + item.size + ") x " + item.quantity + "\n";
             tVal += item.price * item.quantity;
           });
         } else {
           msg += "  + " + data.coffeeType + " (" + data.size + ") x " + data.quantity + "\n";
-          discordItemsText += "• " + data.coffeeType + " (" + data.size + ") x " + data.quantity + "\n";
           tVal = (data.price || 0) * (data.quantity || 1);
         }
         msg += "• <b>Tổng tiền:</b> " + tVal.toLocaleString('vi-VN') + "đ (" + (data.payment || "Tiền mặt") + ")";
         sendTelegramMessage(msg);
-        
-        // Gửi thông báo qua Discord Webhook
-        var discordEmbed = {
-          "title": "🔔 ĐƠN ĐẶT TRƯỚC MỚI",
-          "color": 1789246, // Màu xanh lá cây (#1b4d3e)
-          "fields": [
-            { "name": "🏢 Chi nhánh", "value": warehouse, "inline": true },
-            { "name": "👤 Khách hàng", "value": String(data.seller).replace("Khách: ", ""), "inline": true },
-            { "name": "📝 Ghi chú", "value": data.note || "Không", "inline": false },
-            { "name": "🎫 Mã đơn hàng", "value": orderId, "inline": true },
-            { "name": "💳 Thanh toán", "value": (data.payment || "Tiền mặt") + " (" + tVal.toLocaleString('vi-VN') + "đ)", "inline": true }
-          ],
-          "description": "**Chi tiết món:**\n" + discordItemsText,
-          "timestamp": new Date().toISOString()
-        };
-        sendDiscordMessage([discordEmbed]);
       }
+      
+      // Gửi thông báo qua Discord Webhook cho TẤT CẢ các loại đơn hàng (POS và Đặt trước)
+      var dVal = 0;
+      var discordItemsText = "";
+      if (data.items && data.items.length > 0) {
+        data.items.forEach(function(item) {
+          discordItemsText += "• " + item.coffeeType + " (" + item.size + ") x " + item.quantity + "\n";
+          dVal += item.price * item.quantity;
+        });
+      } else {
+        discordItemsText += "• " + data.coffeeType + " (" + data.size + ") x " + data.quantity + "\n";
+        dVal = (data.price || 0) * (data.quantity || 1);
+      }
+      
+      var isPreOrder = orderMode.indexOf("Đặt trước") !== -1;
+      var discordEmbed = {
+        "title": isPreOrder ? "🔔 ĐƠN ĐẶT TRƯỚC MỚI" : "🛒 ĐƠN HÀNG MỚI (POS)",
+        "color": isPreOrder ? 1789246 : 12058624, // Màu xanh lá cho đặt trước, màu cam đậm cho POS
+        "fields": [
+          { "name": "🏢 Chi nhánh", "value": warehouse, "inline": true },
+          { "name": "👤 User Tạo đơn", "value": String(data.seller).replace("Khách: ", ""), "inline": true },
+          { "name": "📝 Ghi chú", "value": data.note || "Không", "inline": false },
+          { "name": "🎫 Mã đơn hàng", "value": orderId, "inline": true },
+          { "name": "💳 Thanh toán", "value": (data.payment || "Tiền mặt") + " (" + dVal.toLocaleString('vi-VN') + "đ)", "inline": true }
+        ],
+        "description": "**Chi tiết món:**\n" + discordItemsText,
+        "timestamp": new Date().toISOString()
+      };
+      sendDiscordMessage([discordEmbed]);
     }
     
     // Tải lại số dư ví mới nhất để trả về cho client
@@ -1039,10 +1107,16 @@ function adjustUserWalletBalance(ss, username, changeAmount, optionalLoginSheet,
 function parseOrderNoteTags(noteStr) {
   var wallet = 0;
   var user = "";
+  var earned = 0;
   
   var walletMatch = noteStr.match(/\[VÍ_TRỪ:\s*(\d+)\]/);
   if (walletMatch) {
     wallet = Number(walletMatch[1]);
+  }
+  
+  var earnedMatch = noteStr.match(/\[TÍCH_LŨY:\s*(\d+)\]/);
+  if (earnedMatch) {
+    earned = Number(earnedMatch[1]);
   }
   
   var regex = /\[([^\]]+)\]/g;
@@ -1054,12 +1128,12 @@ function parseOrderNoteTags(noteStr) {
   
   for (var i = tags.length - 1; i >= 0; i--) {
     var tag = tags[i].trim();
-    if (tag.indexOf("HẸN LẤY:") === -1 && tag.indexOf("GIAO TỚI:") === -1 && tag.indexOf("VÍ_TRỪ:") === -1) {
+    if (tag.indexOf("HẸN LẤY:") === -1 && tag.indexOf("GIAO TỚI:") === -1 && tag.indexOf("VÍ_TRỪ:") === -1 && tag.indexOf("TÍCH_LŨY:") === -1) {
       user = tag;
       break;
     }
   }
-  return { username: user, wallet: wallet };
+  return { username: user, wallet: wallet, earned: earned };
 }
 
 
@@ -1113,7 +1187,9 @@ function resolvePermissions(ss, roleName) {
     "BÁN HÀNG": "Bán Hàng",
     "QUẢN LÝ PRE-ORDER": "Quản lý hẹn",
     "QUẢN LÝ PRE-O": "Quản lý hẹn",
-    "ĐẶT TRƯỚC": "Đặt Trước"
+    "ĐẶT TRƯỚC": "Đặt Trước",
+    "QUẢN LÝ TÀI KHOẢN": "Quản lý tài khoản",
+    "TÀI KHOẢN CÁ NHÂN": "Tài khoản cá nhân"
   };
   
   // Nếu tìm thấy, tổng hợp các cột có giá trị true/TRUE/checkbox được tích
